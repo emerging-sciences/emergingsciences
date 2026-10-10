@@ -162,10 +162,8 @@ const MATERIAL = [
   ["8", "Rectangular Axis and straight lines", "1-BNFd45vsZ4gBvo2HwUCI-BstxTwG4aP"]
   ["8", "Conic Sections", "1l-qfJQJQtCLOyrVqfLdN6L7mfvCBgs1r"]
   ];
-
-/* ===== EDIT KHATAM ===== */
-
-const $ = id => document.getElementById(id);
+  /* ===== EDIT KHATAM ===== */
+  const $ = id => document.getElementById(id);
 const btns = document.querySelectorAll("nav button"), secs = document.querySelectorAll("section");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let seen = [];
@@ -227,3 +225,7 @@ intro.onclick = hide; setTimeout(hide, 2300);
 </script>
 </body>
 </html>
+
+
+
+
