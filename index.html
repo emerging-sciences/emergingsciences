@@ -85,6 +85,21 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
   .social a{width:36px;height:36px}.social svg{width:17px;height:17px}
   main{padding:32px 18px}
 }
+
+/* Other learning platform */
+.platform-switcher{margin-top:34px;padding:24px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#101827,#0b0e16);max-width:1000px}
+.platform-switcher .platform-eyebrow{color:var(--gold);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.platform-switcher h2{margin:0 0 8px;font:700 clamp(1.35rem,3vw,1.8rem) 'Playfair Display',Georgia,serif;color:var(--ink)}
+.platform-switcher .platform-intro{margin-bottom:18px;font-size:.9rem}
+.platform-switcher-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.platform-switcher-card{display:flex;flex-direction:column;gap:10px;min-width:0;padding:18px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);color:var(--ink);text-decoration:none;transition:border-color .2s,transform .2s}
+.platform-switcher-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.platform-switcher-card .platform-symbol{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:rgba(233,197,79,.12);color:var(--gold);font-size:1.3rem;font-weight:800}
+.platform-switcher-card strong{font-size:1rem;line-height:1.35}
+.platform-switcher-card .platform-desc{font-size:.82rem;color:var(--mute);line-height:1.6}
+.platform-switcher-card .platform-cta{margin-top:auto;padding-top:4px;color:var(--gold);font-size:.82rem;font-weight:800}
+@media(max-width:520px){.platform-switcher{padding:18px}.platform-switcher-grid{grid-template-columns:1fr}.platform-switcher-card{min-height:0}}
+
 </style>
 </head>
 <body>
@@ -125,6 +140,26 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
     <section id="home" class="on">
       <h1>Free Lectures for <span>Mathematics, JEE, CBSE 12th, NDA &amp; CUET</span></h1>
       <p>Bilkul free. Koi fees nahi, koi registration nahi.</p>
+
+      <div class="platform-switcher" aria-labelledby="platform-switcher-title">
+        <div class="platform-eyebrow">Keep learning with us</div>
+        <h2 id="platform-switcher-title">Explore Our Other Platform</h2>
+        <p class="platform-intro">Ek hi mission — har student tak quality education free mein pahunchana.</p>
+        <div class="platform-switcher-grid">
+          <a class="platform-switcher-card" href="https://emerging-sciences.github.io/emergingsciences/" target="_blank" rel="noopener noreferrer">
+            <span class="platform-symbol" aria-hidden="true">∑</span>
+            <strong>IIT JAM &amp; Higher Mathematics</strong>
+            <span class="platform-desc">IIT JAM, CUET PG, TIFR, Real Analysis aur MSc entrance preparation.</span>
+            <span class="platform-cta">Explore JAM Platform ↗</span>
+          </a>
+          <a class="platform-switcher-card" href="https://emerging-sciences.github.io/emergingsciences.github.io/index.html" target="_blank" rel="noopener noreferrer">
+            <span class="platform-symbol" aria-hidden="true">π</span>
+            <strong>School &amp; Competitive Exams</strong>
+            <span class="platform-desc">Class 11–12, JEE, NDA, CUET UG aur NCERT-based learning.</span>
+            <span class="platform-cta">You are here · Open platform ↗</span>
+          </a>
+        </div>
+      </div>
     </section>
     <section id="lectures"></section>
     <section id="material"></section>
