@@ -40,6 +40,11 @@ h1 span{color:#4d8dff}
 p{color:var(--mute);max-width:52ch}
 .soon{color:var(--mute)}
 
+/* Doubts: form poori available width + screen height leta hai */
+#doubts{max-width:none}
+.formwrap{width:100%;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#d6c5a2}
+.formwrap iframe{display:block;width:100%;height:calc(100vh - 40px);height:calc(100dvh - 40px);min-height:680px;border:0}
+
 
 h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
 .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
@@ -170,7 +175,7 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
       <div id="gc" style="max-width:760px"></div>
       <h2 style="margin-top:36px">Private doubt</h2>
       <p style="margin-bottom:16px">Sirf humein milega. Login nahi chahiye.</p>
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe1m3Lpc1hyW7rem8aG6DtgBEo3TzzFiwoRF5qzhtTSV4gOjQ/viewform?embedded=true" width="100%" height="1200px" style="width: 100%; max-width: 100%; border: 0; border-radius: 12px; background:#fff;" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+      <div class="formwrap"><iframe id="gf" title="Ask Your Doubt – Google Form" loading="lazy">Loading…</iframe></div>
     </section>
     </main>
 </div>
@@ -182,6 +187,8 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
    Chapter number = neeche list me chapter ka number (1 se 16).
    Jis chapter me kuch add nahi hua, wo "Coming soon" dikhta hai.        */
 const SUBJECT = "Mathematics";
+/* Private doubt Google Form (Doubts section me, giscus ke niche khulta hai) */
+const DOUBT_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSeVjCBKiMrltV93MsX9NOvqM0inW6D0G81wLW6gUA3kURHvyg/viewform?embedded=true";
 const CHAPTERS = ["Sets, Relations and Functions","Trigonometry","Complex Numbers and Theory of Equations and Inequalities","Principle of Mathematical Induction","Permutations and Combinations","Binomial Theorem","Sequence and Series","Rectangular Axis, Straight Lines and Conic Sections","Differential Calculus","Integral Calculus","Differential Equations","Matrices and Determinants","Vectors","3D Geometry","Statistics","Probability"];
 const LECTURES = [
  // ["9", "Limits – Lecture 1", "dQw4w9WgXcQ"],
@@ -238,7 +245,7 @@ function show(){
 let dLoaded = false;
 function loadDoubts(){
   if (dLoaded) return; dLoaded = true;
-  $("gf").src = "https://docs.google.com/forms/d/e/1FAIpQLSe1m3Lpc1hyW7rem8aG6DtgBEo3TzzFiwoRF5qzhtTSV4gOjQ/viewform?embedded=true";
+  $("gf").src = DOUBT_FORM;
   const g = document.createElement("script");
   g.src = "https://giscus.app/client.js"; g.async = true; g.crossOrigin = "anonymous";
   Object.entries({"repo":"emerging-sciences/emergingsciences.github.io","repo-id":"R_kgDOTITyqw","category":"General","category-id":"DIC_kwDOTITyq84DGOLX","mapping":"specific","term":"Doubts - students site","reactions-enabled":"1","emit-metadata":"0","input-position":"top","theme":"dark","lang":"en"}).forEach(([k,v]) => g.setAttribute("data-"+k, v));
@@ -265,10 +272,3 @@ intro.onclick = hide; setTimeout(hide, 2300);
 </script>
 </body>
 </html>
-<div style="text-align: center; padding: 40px;">
-    <h2>Have a Doubt in 12th Mathematics?</h2>
-    <p>Apna doubt text ya screenshot (image) ke sath submit karne ke liye niche click karein:</p>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeVjCBKiMrltV93MsX9NOvqM0inW6D0G81wLW6gUA3kURHvyg/viewform" target="_blank" style="background-color: #f39c12; color: #000; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block; margin-top: 15px;">
-        Ask Your Doubt (Google Form)
-    </a>
-</div>
