@@ -42,8 +42,10 @@ p{color:var(--mute);max-width:52ch}
 
 /* Doubts: form poori available width + screen height leta hai */
 #doubts{max-width:none}
-.formwrap{width:100%;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#d6c5a2}
-.formwrap iframe{display:block;width:100%;height:calc(100vh - 40px);height:calc(100dvh - 40px);min-height:680px;border:0}
+.formwrap{width:100%;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#000}
+/* Google Form dusre domain ka hai, uske andar CSS nahi laga sakte; isliye poore iframe ko invert karke dark dikhate hain.
+   Dark nahi chahiye to neeche wali filter line hata do. */
+.formwrap iframe{display:block;width:100%;height:calc(100vh - 40px);height:calc(100dvh - 40px);min-height:680px;border:0;background:#fff;filter:invert(1) hue-rotate(180deg)}
 
 
 h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
