@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Emerging Sciences – Free Lectures</title>
-<meta name="description" content="Free lectures and study material for JEE, CBSE 12th, NDA and CUET students.">
+<meta name="description" content="Free lectures and study material for Mathematics and Physics - JEE, CBSE 12th, NDA and CUET students.">
 <link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -64,6 +64,16 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
 .item .tick{color:#4ade80;font-weight:700;margin-left:auto}
 .item{flex-direction:row;align-items:center;min-height:0;gap:14px}
 .item .n{font-size:1.1rem}
+/* Subject chooser: Mathematics / Physics */
+.subjects{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;max-width:760px}
+.subj{min-height:168px;padding:22px;gap:10px}
+.subj svg{width:34px;height:34px;color:var(--gold);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.subj b{font:700 1.25rem 'Playfair Display',Georgia,serif}
+.subj small{margin-top:0}
+.subj .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.subj .links a{color:var(--ink);text-decoration:none;font:600 .8rem Montserrat,sans-serif;padding:7px 12px;border:1px solid var(--line);border-radius:8px}
+.subj .links a:hover{border-color:var(--gold);color:var(--gold)}
+.home-subj{cursor:default}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;z-index:9}
 #modal.on{display:flex}
 #modal .bar{width:min(960px,100%);display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:600}
@@ -130,8 +140,9 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
 
   <main>
     <section id="home" class="on">
-      <h1>Free Lectures for <span>Mathematics, JEE, CBSE 12th, NDA &amp; CUET</span></h1>
+      <h1>Free Lectures for <span>Mathematics, Physics, JEE, CBSE 12th, NDA &amp; CUET</span></h1>
       <p style="margin-bottom: 24px;">Bilkul free. Koi fees nahi, koi registration nahi.</p>
+      <div id="home-subjects" class="subjects"></div>
       
       <!-- CROSS-PROMOTION PLATFORMS SECTION -->
       <div style="margin-top: 36px; border-top: 1px solid var(--line); padding-top: 28px; max-width: 700px;">
@@ -202,9 +213,10 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
 /* ===== YAHAN EDIT KARO =====
    Lecture add:  ["chapter number", "Lecture title", "YouTube video ID"]
    Material add: ["chapter number", "PDF title", "Google Drive file ID"]
-   Chapter number = neeche list me chapter ka number (1 se 16).
+   Mathematics -> LECTURES / MATERIAL            (chapter number 1 se 16)
+   Physics     -> PHYSICS_LECTURES / PHYSICS_MATERIAL (chapter number 1 se 34)
+   Chapter number = us subject ki CHAPTERS list me chapter ka number.
    Jis chapter me kuch add nahi hua, wo "Coming soon" dikhta hai.        */
-const SUBJECT = "Mathematics";
 /* Private doubt Google Form (Doubts section me, giscus ke niche khulta hai) */
 const DOUBT_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSeVjCBKiMrltV93MsX9NOvqM0inW6D0G81wLW6gUA3kURHvyg/viewform?embedded=true";
 const CHAPTERS = ["Sets, Relations and Functions","Trigonometry","Complex Numbers and Theory of Equations and Inequalities","Principle of Mathematical Induction","Permutations and Combinations","Binomial Theorem","Sequence and Series","Rectangular Axis, Straight Lines and Conic Sections","Differential Calculus","Integral Calculus","Differential Equations","Matrices and Determinants","Vectors","3D Geometry","Statistics","Probability"];
@@ -230,6 +242,17 @@ const LECTURES = [
      ["13", "Vectors with examples", "1JJVeN34y-6nRroPTEgvrIbJLHKw_yyxO"]
      ];
 
+  /* ---------- PHYSICS ----------
+     Lecture add:  PHYSICS_LECTURES me  ["chapter number (1 se 34)", "Lecture title", "YouTube video ID"]
+     Material add: PHYSICS_MATERIAL me  ["chapter number (1 se 34)", "PDF title", "Google Drive file ID"] */
+  const PHYSICS_CHAPTERS = ["Units and Measurement","Mathematical Physics","Motion in a Straight Line","Motion in a Plane","Laws of Motion","Work, Energy and Power","Rotational Motion","Gravitation","Elasticity","Hydrostatics","Hydrodynamics","Surface Tension","Thermometry and Calorimetry","Kinetic Theory of Gases","Thermodynamics","Transmission of Heat","Oscillations","Waves and Sound","Electrostatics","Current Electricity","Heating and Chemical Effects of Current","Magnetic Effect of Current","Magnetism and Matter","Electromagnetic Induction","Alternating Current","Electromagnetic Waves","Ray Optics","Wave Optics","Electrons, Photons and X-rays","Atomic Physics","Nuclear Physics","Electronics","Communication","Universe"];
+  const PHYSICS_LECTURES = [
+    // ["1", "Units and Measurement – Lecture 1", "YouTubeVideoID"],
+  ];
+  const PHYSICS_MATERIAL = [
+    // ["1", "Units and Measurement – Notes", "GoogleDriveFileID"],
+  ];
+
   /* ===== EDIT KHATAM ===== */
   const $ = id => document.getElementById(id);
 const btns = document.querySelectorAll("nav button"), secs = document.querySelectorAll("section");
@@ -237,30 +260,69 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":
 let seen = [];
 try { seen = JSON.parse(localStorage.getItem("es_seen") || "[]"); } catch(e) {}
 const mark = id => { if (!seen.includes(id)) { seen.push(id); try { localStorage.setItem("es_seen", JSON.stringify(seen)); } catch(e) {} } };
-const DATA = { lectures: LECTURES, material: MATERIAL };
+const SUBJECTS = {
+  maths:   { name:"Mathematics", chapters:CHAPTERS,         lectures:LECTURES,         material:MATERIAL },
+  physics: { name:"Physics",     chapters:PHYSICS_CHAPTERS, lectures:PHYSICS_LECTURES, material:PHYSICS_MATERIAL }
+};
+const LABEL = { lectures:"Lectures", material:"Study Material" };
+const ICONS = {
+  maths:   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7.5h15M9 7.5c-.2 4-1 7.5-2.8 10M15 7.5v8.5c0 1.6 1 2.2 2.6 1.6"/></svg>',
+  physics: '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>'
+};
+const unit = (p, n) => p === "lectures" ? (n === 1 ? " lecture" : " lectures") : (n === 1 ? " file" : " files");
+/* Maths ka purana id format same rakha hai, taaki students ke dekhe hue ✓ na ud jaaye */
+const sid = (p, sj, ch, i) => (sj === "maths" ? p+ch : p+"-"+sj+ch) + "-" + i;
+const total = sj => SUBJECTS[sj].lectures.length + SUBJECTS[sj].material.length;
 
-function build(p, ch, term){
-  const el = $(p), items = DATA[p], label = p === "lectures" ? "Lectures" : "Study Material";
+function subjCard(k, p){
+  const S = SUBJECTS[k], n = S[p].length;
+  return '<button class="card subj" data-go="'+p+'/'+k+'">'+ICONS[k]+'<b>'+S.name+'</b><small>'+S.chapters.length+' chapters · '+(n ? n+unit(p,n) : 'Coming soon')+'</small></button>';
+}
+
+function homeSubjects(){
+  $("home-subjects").innerHTML = Object.keys(SUBJECTS).map(k => {
+    const S = SUBJECTS[k];
+    return '<div class="card subj home-subj">'+ICONS[k]+'<b>'+S.name+'</b><small>'+S.chapters.length+' chapters'+(total(k) ? '' : ' · Coming soon')+'</small>'+
+      '<div class="links"><a href="#lectures/'+k+'">Lectures</a><a href="#material/'+k+'">Study Material</a></div></div>';
+  }).join("");
+}
+
+/* p = lectures | material,  sj = maths | physics (khali = subject chunne wala page),  ch = chapter number (0 = chapter list) */
+function build(p, sj, ch, term){
+  const el = $(p), label = LABEL[p];
+  if (!sj) {
+    el.innerHTML = '<h1>'+label+'</h1><p style="margin-bottom:24px">Pehle subject chuno.</p><div class="subjects">'+Object.keys(SUBJECTS).map(k => subjCard(k, p)).join("")+'</div>';
+    return;
+  }
+  const S = SUBJECTS[sj], items = S[p];
   if (ch) {
     const list = items.filter(r => +r[0] === ch);
-    el.innerHTML = '<div class="top"><button class="back" data-go="'+p+'">← Chapters</button></div><h2>'+ch+'. '+esc(CHAPTERS[ch-1])+'</h2><div class="grid" style="grid-template-columns:1fr">'+
-      list.map((r,i) => { const id = p+ch+"-"+i; return '<button class="card item" data-open="'+p+'|'+ch+'|'+i+'"><span class="n">'+(i+1)+'</span><b>'+esc(r[1])+'</b>'+(seen.includes(id)?'<span class="tick">✓</span>':'')+'</button>'; }).join("")+'</div>';
+    el.innerHTML = '<div class="top"><button class="back" data-go="'+p+'/'+sj+'">← Chapters</button></div><h2>'+ch+'. '+esc(S.chapters[ch-1])+'</h2>'+
+      (list.length ? '<div class="grid" style="grid-template-columns:1fr">'+
+        list.map((r,i) => { const id = sid(p, sj, ch, i); return '<button class="card item" data-open="'+p+'|'+sj+'|'+ch+'|'+i+'"><span class="n">'+(i+1)+'</span><b>'+esc(r[1])+'</b>'+(seen.includes(id)?'<span class="tick">✓</span>':'')+'</button>'; }).join("")+'</div>'
+        : '<p class="soon">Coming soon</p>');
     return;
   }
   const t = (term||"").toLowerCase();
-  el.innerHTML = '<h1>'+label+'</h1><div class="top"><input type="search" id="s-'+p+'" placeholder="Chapter search karo…" value="'+esc(term||"")+'" aria-label="Search chapters"></div><h2>'+SUBJECT+'</h2><div class="grid">'+
-    CHAPTERS.map((c,i) => ({c, n:i+1, k:items.filter(r => +r[0] === i+1).length})).filter(o => o.c.toLowerCase().includes(t)).map(o =>
-      o.k ? '<button class="card" data-go="'+p+'/'+o.n+'"><span class="n">'+o.n+'</span><b>'+esc(o.c)+'</b><small class="live">'+o.k+(p==="lectures"?" lectures":" files")+'</small></button>'
+  el.innerHTML = '<h1>'+label+'</h1><div class="top"><button class="back" data-go="'+p+'">← Subjects</button><input type="search" id="s-'+p+'" placeholder="Chapter search karo…" value="'+esc(term||"")+'" aria-label="Search chapters"></div><h2>'+S.name+'</h2><div class="grid">'+
+    S.chapters.map((c,i) => ({c, n:i+1, k:items.filter(r => +r[0] === i+1).length})).filter(o => o.c.toLowerCase().includes(t)).map(o =>
+      o.k ? '<button class="card" data-go="'+p+'/'+sj+'/'+o.n+'"><span class="n">'+o.n+'</span><b>'+esc(o.c)+'</b><small class="live">'+o.k+unit(p,o.k)+'</small></button>'
           : '<div class="card" aria-disabled="true"><span class="n">'+o.n+'</span><b>'+esc(o.c)+'</b><small>Coming soon</small></div>').join("")+'</div>';
-  const inp = $("s-"+p); inp.oninput = () => { build(p, 0, inp.value); const i2 = $("s-"+p); i2.focus(); i2.setSelectionRange(99,99); };
+  const inp = $("s-"+p); inp.oninput = () => { build(p, sj, 0, inp.value); const i2 = $("s-"+p); i2.focus(); i2.setSelectionRange(99,99); };
 }
 
 function show(){
-  const [p0, c0] = location.hash.slice(1).split("/");
-  const p = ["lectures","material","doubts"].includes(p0) ? p0 : "home", ch = +c0 || 0;
+  /* #lectures  -> subject chuno | #lectures/physics -> physics chapters | #lectures/physics/5 -> chapter 5
+     Purane links (#lectures/12) Mathematics ke chapter 12 par hi khulte rahenge. */
+  const [p0, a, b] = location.hash.slice(1).split("/");
+  const p = ["lectures","material","doubts"].includes(p0) ? p0 : "home";
+  let sj = "", ch = 0;
+  if (Object.keys(SUBJECTS).includes(a)) { sj = a; ch = +b || 0; }
+  else if (+a > 0) { sj = "maths"; ch = +a; }
+  if (sj && !(ch > 0 && ch <= SUBJECTS[sj].chapters.length)) ch = 0;
   secs.forEach(s => s.classList.toggle("on", s.id === p));
   btns.forEach(b => b.dataset.p === p ? b.setAttribute("aria-current","page") : b.removeAttribute("aria-current"));
-  if (p === "doubts") loadDoubts(); else if (p !== "home") build(p, ch > 0 && ch <= CHAPTERS.length ? ch : 0);
+  if (p === "doubts") loadDoubts(); else if (p !== "home") build(p, sj, ch);
   scrollTo(0,0);
 }
 let dLoaded = false;
@@ -277,14 +339,15 @@ addEventListener("hashchange", show);
 document.addEventListener("click", e => {
   const g = e.target.closest("[data-go]"); if (g) { location.hash = g.dataset.go; return; }
   const o = e.target.closest("[data-open]"); if (!o) return;
-  const [p, ch, i] = o.dataset.open.split("|"), r = DATA[p].filter(x => +x[0] === +ch)[+i];
+  const [p, sj, ch, i] = o.dataset.open.split("|"), r = SUBJECTS[sj][p].filter(x => +x[0] === +ch)[+i];
   const url = p === "lectures" ? "https://www.youtube-nocookie.com/embed/"+r[2]+"?rel=0" : "https://drive.google.com/file/d/"+r[2]+"/preview";
   $("mt").textContent = r[1]; $("mf").src = url;
   $("mo").href = p === "lectures" ? "https://www.youtube.com/watch?v="+r[2] : "https://drive.google.com/file/d/"+r[2]+"/view";
-  $("modal").classList.add("on"); mark(p+ch+"-"+i); o.insertAdjacentHTML("beforeend", o.querySelector(".tick") ? "" : '<span class="tick">✓</span>');
+  $("modal").classList.add("on"); mark(sid(p, sj, ch, i)); o.insertAdjacentHTML("beforeend", o.querySelector(".tick") ? "" : '<span class="tick">✓</span>');
 });
 const closeM = () => { $("modal").classList.remove("on"); $("mf").src = ""; };
 $("mc").onclick = closeM; addEventListener("keydown", e => e.key === "Escape" && closeM());
+homeSubjects();
 show();
 
 const intro = document.getElementById("intro");
