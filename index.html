@@ -70,10 +70,6 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
 .subj svg{width:34px;height:34px;color:var(--gold);fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .subj b{font:700 1.25rem 'Playfair Display',Georgia,serif}
 .subj small{margin-top:0}
-.subj .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
-.subj .links a{color:var(--ink);text-decoration:none;font:600 .8rem Montserrat,sans-serif;padding:7px 12px;border:1px solid var(--line);border-radius:8px}
-.subj .links a:hover{border-color:var(--gold);color:var(--gold)}
-.home-subj{cursor:default}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;z-index:9}
 #modal.on{display:flex}
 #modal .bar{width:min(960px,100%);display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:600}
@@ -142,7 +138,6 @@ h2{font:700 1.3rem 'Playfair Display',serif;margin:6px 0 18px}
     <section id="home" class="on">
       <h1>Free Lectures for <span>Mathematics, Physics, JEE, CBSE 12th, NDA &amp; CUET</span></h1>
       <p style="margin-bottom: 24px;">Bilkul free. Koi fees nahi, koi registration nahi.</p>
-      <div id="home-subjects" class="subjects"></div>
       
       <!-- CROSS-PROMOTION PLATFORMS SECTION -->
       <div style="margin-top: 36px; border-top: 1px solid var(--line); padding-top: 28px; max-width: 700px;">
@@ -272,19 +267,9 @@ const ICONS = {
 const unit = (p, n) => p === "lectures" ? (n === 1 ? " lecture" : " lectures") : (n === 1 ? " file" : " files");
 /* Maths ka purana id format same rakha hai, taaki students ke dekhe hue ✓ na ud jaaye */
 const sid = (p, sj, ch, i) => (sj === "maths" ? p+ch : p+"-"+sj+ch) + "-" + i;
-const total = sj => SUBJECTS[sj].lectures.length + SUBJECTS[sj].material.length;
-
 function subjCard(k, p){
   const S = SUBJECTS[k], n = S[p].length;
   return '<button class="card subj" data-go="'+p+'/'+k+'">'+ICONS[k]+'<b>'+S.name+'</b><small>'+S.chapters.length+' chapters · '+(n ? n+unit(p,n) : 'Coming soon')+'</small></button>';
-}
-
-function homeSubjects(){
-  $("home-subjects").innerHTML = Object.keys(SUBJECTS).map(k => {
-    const S = SUBJECTS[k];
-    return '<div class="card subj home-subj">'+ICONS[k]+'<b>'+S.name+'</b><small>'+S.chapters.length+' chapters'+(total(k) ? '' : ' · Coming soon')+'</small>'+
-      '<div class="links"><a href="#lectures/'+k+'">Lectures</a><a href="#material/'+k+'">Study Material</a></div></div>';
-  }).join("");
 }
 
 /* p = lectures | material,  sj = maths | physics (khali = subject chunne wala page),  ch = chapter number (0 = chapter list) */
@@ -347,7 +332,6 @@ document.addEventListener("click", e => {
 });
 const closeM = () => { $("modal").classList.remove("on"); $("mf").src = ""; };
 $("mc").onclick = closeM; addEventListener("keydown", e => e.key === "Escape" && closeM());
-homeSubjects();
 show();
 
 const intro = document.getElementById("intro");
