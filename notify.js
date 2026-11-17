@@ -1,5 +1,5 @@
-// Emerging Sciences — in-app notifications (🔔): "kisi ne aapke comment par reply kiya"
-import { auth, db } from "./comments.js";
+// Emerging Sciences — in-app notifications (🔔): reply to my comment; (teacher only) new student comments
+import { auth, db, ADMIN_UIDS } from "./comments.js";
 import { onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { collection, query, orderBy, limit, onSnapshot, updateDoc, doc }
   from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
@@ -164,7 +164,10 @@ function paint() {
     const row = document.createElement("div");
     row.className = "ni" + (n.read ? "" : " new");
     const a = document.createElement("div");
-    a.textContent = (n.fromName || "Koi") + " ne aapke comment par reply kiya";
+    const who = n.fromName || "Koi";
+    a.textContent = n.kind === "new"
+      ? who + " ne naya comment kiya"
+      : (ADMIN_UIDS.includes(n.fromUid) ? "👨‍🏫 Teacher" : who) + " ne aapke comment par reply kiya";
     const b = document.createElement("small");
     b.textContent = "“" + (n.text || "") + "”";
     const c = document.createElement("small");
