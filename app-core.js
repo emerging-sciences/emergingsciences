@@ -102,7 +102,7 @@ window.ES={
  save(id,b){const on=toggle('saved',id);b.textContent=on?'🔖 Saved':'🔖 Save'}};
 const R={
 home(el){el.innerHTML=`<section class="section"><div class="section-inner"><div id="dash" class="a-grid3"></div></div></section>`;dash();
- const sb=$('#es-stats');if(sb)sb.innerHTML=[[D.lectures.length,'Lectures'],[D.material.length,'Notes & PDFs'],[(D.exams||[]).length,'Exams']].map(x=>`<div class="stat-box"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
+ const sb=$('#es-stats');if(sb)sb.innerHTML=[[D.lectures.length,'Lectures'],[D.material.length,'Notes & PDFs'],[(D.mocks||[]).length,'Mock Tests'],[(D.exams||[]).length,'Exams']].map(x=>`<div class="stat-box"><b>${x[0]}</b><span>${x[1]}</span></div>`).join('');
  const cc=$('#cat-chips');if(cc)cc.innerHTML=D.cats.map(k=>`<a href="#cat-${k.id}">${k.icon} ${esc(k.name)}</a>`).join('');
  const xl=$('#exam-list');if(xl)xl.innerHTML=D.cats.map(k=>`<h3 class="cat-h" id="cat-${k.id}">${k.icon} ${esc(k.name)}<small>${esc(k.desc)}</small></h3>`+D.exams.filter(e=>e.cat==k.id).map(examCard).join('')).join('')},
 lectures(el){const {ex,sub,p}=resolve();if(!ex){el.innerHTML=chooser('lectures');return}
