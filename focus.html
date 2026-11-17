@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Focus Mode — Emerging Sciences</title>
+<meta name="description" content="Study timer with focus mode, daily goal and streak. Free for every student.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="favicon.png?v=2">
+<link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
+<link rel="shortcut icon" href="favicon.ico?v=2">
+<link rel="apple-touch-icon" href="favicon.png?v=2">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="nav.css">
+<link rel="stylesheet" href="theme.css?v=1">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0f0d">
+<style>
+  .fx{max-width:760px;margin:0 auto;padding:24px 16px 40px}
+  .fx h1{font-family:var(--font-d);font-size:clamp(1.6rem,4vw,2.2rem);margin:0 0 6px;color:var(--text)}
+  .fx .lead{color:var(--text2);margin:0 0 18px}
+  .fx .a-card{margin-bottom:14px;display:block}
+  .fx h2{font-family:var(--font-d);font-size:17px;margin:0 0 10px;color:var(--text)}
+  .fx .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .fx .row label{color:var(--text2);font-size:13px}
+  .fx .num{width:78px;padding:9px;border-radius:10px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text);font-size:15px}
+  .fx select{padding:9px;border-radius:10px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text);font-size:14px;max-width:100%}
+  .fx .ring{position:relative;width:min(270px,72vw);aspect-ratio:1;margin:10px auto 6px}
+  .fx .ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+  .fx .ring .tr{stroke:var(--border-strong);fill:none}
+  .fx .ring .pg{fill:none;stroke:var(--blue);stroke-linecap:round;transition:stroke-dashoffset .4s linear,stroke .3s}
+  .fx .ring.brk .pg{stroke:var(--green)}
+  .fx .clock{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .fx .clock b{font-family:var(--font-d);font-size:clamp(40px,12vw,56px);font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+  .fx .clock span{color:var(--text2);font-size:13px;margin-top:2px}
+  .fx .main{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+  .fx .main button,.fx .btn2{border:1px solid var(--border-strong);background:var(--surface);color:var(--text);padding:11px 18px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer}
+  .fx .main button.go{background:var(--blue);border-color:var(--blue);color:#fff;min-width:130px}
+  .fx .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .fx .opts label{color:var(--text2);font-size:13.5px;cursor:pointer}
+  .fx .msg{min-height:22px;text-align:center;font-size:14px;color:var(--text);margin-top:6px}
+  .fx .msg.warn{color:#fbbf24}.fx .msg.good{color:var(--green)}
+  .fx .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-top:12px}
+  .fx .tile{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:center}
+  .fx .tile b{display:block;font-family:var(--font-d);font-size:21px;color:var(--text)}.fx .tile span{font-size:12px;color:var(--text2)}
+  .fx .wk{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:6px}
+  .fx .wk div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;min-width:0}
+  .fx .wk i{display:block;width:100%;background:var(--blue-mid);border-radius:6px 6px 0 0;min-height:3px}
+  .fx .wk i.hit{background:var(--green)}
+  .fx .wk small{font-size:11px;color:var(--text3);margin:0}.fx .wk em{font-size:10.5px;color:var(--text2);font-style:normal}
+  .fx .hist{list-style:none;padding:0;margin:0}.fx .hist li{padding:8px 0;border-bottom:1px solid var(--border);color:var(--text2);font-size:13.5px}.fx .hist li:last-child{border:0}
+  .fx details{margin-top:8px}.fx summary{cursor:pointer;font-weight:600;color:var(--text);padding:6px 0}
+  .fx details ol{margin:6px 0 4px 20px;color:var(--text2);font-size:14px;line-height:1.7}
+  .fx .note{color:var(--text2);font-size:13px;margin-top:8px}
+  body.zen .hdr,body.zen .bnav,body.zen footer{display:none}
+  body.zen{padding-bottom:20px}
+</style>
+</head>
+<body>
+<div id="splash"><img src="logo-full.png" alt=""><b>Emerging Sciences</b></div>
+<script>try{if(sessionStorage.getItem('es_splash')){document.getElementById('splash').remove()}else{sessionStorage.setItem('es_splash','1');setTimeout(function(){var s=document.getElementById('splash');s&&s.remove()},1900)}}catch(e){var s=document.getElementById('splash');s&&s.remove()}</script>
+
+<script src="nav.js" data-part="hdr"></script>
+
+<main class="fx" id="fx">
+  <h1>⏱ Focus Mode</h1>
+  <p class="lead">Study in focused rounds. Your focus time counts toward your daily goal and study streak. <a href="how-to-use.html" style="color:var(--blue)">❓ How to use</a></p>
+
+  <div class="a-card" id="timerCard">
+    <div class="chips" id="presets">
+      <a href="#" data-f="25" data-b="5">25 / 5</a>
+      <a href="#" data-f="45" data-b="10">45 / 10</a>
+      <a href="#" data-f="60" data-b="10">60 / 10</a>
+    </div>
+    <div class="row">
+      <label>Focus <input class="num" id="inF" type="number" min="1" max="180" value="25"> min</label>
+      <label>Break <input class="num" id="inB" type="number" min="1" max="60" value="5"> min</label>
+      <label>Subject <select id="subj"></select></label>
+    </div>
+
+    <div class="ring" id="ring">
+      <svg viewBox="0 0 200 200" aria-hidden="true"><circle class="tr" cx="100" cy="100" r="88" stroke-width="10"/><circle class="pg" id="pg" cx="100" cy="100" r="88" stroke-width="10" stroke-dasharray="552.92" stroke-dashoffset="0"/></svg>
+      <div class="clock"><b id="clock">25:00</b><span id="phase">Ready to focus</span></div>
+    </div>
+    <div class="msg" id="msg" role="status" aria-live="polite"></div>
+    <div class="main">
+      <button class="go" id="bStart">▶ Start</button>
+      <button id="bReset">↺ Reset</button>
+      <button id="bSkip" hidden>⏭ Skip break</button>
+      <button id="bZen">⛶ Zen mode</button>
+    </div>
+    <div class="opts">
+      <label><input type="checkbox" id="oWake" checked> Keep my screen on while the timer runs</label>
+      <label><input type="checkbox" id="oNote"> Notify me when a round ends</label>
+      <label><input type="checkbox" id="oStrict"> Strict mode: end the round if I leave this website for more than 30 seconds</label>
+    </div>
+    <p class="note">Tip: once the timer starts you can open lectures and material on this website — a small timer stays on screen and keeps counting. Keep your phone on Do&nbsp;Not&nbsp;Disturb.</p>
+  </div>
+
+  <div class="a-card">
+    <h2>Today</h2>
+    <div class="bar"><i id="goalBar" style="width:0%"></i></div>
+    <small id="goalTxt"></small>
+    <div class="tiles">
+      <div class="tile"><b id="tMin">0</b><span>minutes studied</span></div>
+      <div class="tile"><b id="tStreak">0</b><span>🔥 day streak</span></div>
+      <div class="tile"><b id="tRounds">0</b><span>rounds done</span></div>
+      <div class="tile"><b id="tLeft">0</b><span>times you left</span></div>
+    </div>
+    <small>Study minutes include lecture watching and focus rounds on this device.</small>
+  </div>
+
+  <div class="a-card">
+    <h2>Last 7 days (minutes)</h2>
+    <div class="wk" id="wk"></div>
+    <small>Green bar = daily goal reached.</small>
+  </div>
+
+  <div class="a-card">
+    <h2>Recent rounds</h2>
+    <ul class="hist" id="hist"></ul>
+  </div>
+
+  <div class="a-card">
+    <h2>📵 Block Instagram, YouTube and X on your phone</h2>
+    <p class="note" style="margin-top:0">A website cannot block other apps — only your phone can. Your phone already has a free blocker. Menu names change with the phone brand and version, so if you don't find an option, search for it in Settings.</p>
+    <details>
+      <summary>Android (Digital Wellbeing)</summary>
+      <ol>
+        <li>Open <b>Settings → Digital Wellbeing &amp; parental controls</b>.</li>
+        <li>Tap <b>Focus mode</b> (on some phones it is under "Modes").</li>
+        <li>Select the apps that distract you: Instagram, YouTube, X and any others.</li>
+        <li>Tap <b>Turn on now</b>, or set a schedule for your study hours.</li>
+        <li>For a daily limit, use <b>App timers</b> and set a time for each app.</li>
+      </ol>
+    </details>
+    <details>
+      <summary>iPhone (Screen Time)</summary>
+      <ol>
+        <li>Open <b>Settings → Screen Time</b> and turn it on.</li>
+        <li><b>App Limits → Add Limit</b>: choose Social and Entertainment (or pick the apps) and set a time.</li>
+        <li>For study hours, use <b>Downtime</b>: set a schedule and keep only the apps you need (your browser, for this website) in <b>Always Allowed</b>.</li>
+        <li>Optional: use <b>Settings → Focus</b> to silence notifications during study.</li>
+      </ol>
+    </details>
+    <p class="note">These blockers are easy to switch off. Ask a family member to set the Screen Time passcode or keep the PIN, so you do not skip it in a weak moment.</p>
+  </div>
+
+  <div class="btns"><a href="lectures.html">▶ Go to lectures</a><a href="material.html">📄 Study material</a><a href="index.html">🏠 Home</a></div>
+</main>
+
+<script src="nav.js" data-part="nav"></script>
+<script src="data.js"></script>
+<script src="focus-bar.js"></script>
+<script>
+(function(){
+'use strict';
+var D=window.ES_DATA||{},F=window.ESFocus;
+function $(s){return document.querySelector(s)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var LS={g:function(k,d){try{var v=localStorage.getItem('es_'+k);return v?JSON.parse(v):d}catch(e){return d}}};
+function dayKey(d){return (d||new Date()).toLocaleDateString('en-CA')}
+function goalMin(){return +LS.g('goal',D.goalMin||30)||30}
+function streak(m,goalSec){var n=0,d=new Date();if((m[dayKey(d)]||0)<goalSec)d.setDate(d.getDate()-1);while((m[dayKey(d)]||0)>=goalSec){n++;d.setDate(d.getDate()-1)}return n}
+function mins(sec){return Math.floor(sec/60)}
+var CIRC=552.92,tickN=0;
+
+function say(t,cls){var m=$('#msg');m.textContent=t||'';m.className='msg'+(cls?' '+cls:'')}
+function render(){
+  var g=F.get(),brk=g.ph==='break';
+  $('#clock').textContent=F.fmt(g.left);
+  $('#phase').textContent=g.run?(brk?'Break — relax':'Focus — stay on this'):(brk?'Break paused':(g.left<g.tot?'Paused':'Ready to focus'));
+  $('#ring').className='ring'+(brk?' brk':'');
+  $('#pg').setAttribute('stroke-dashoffset',String(CIRC*(1-(g.tot?Math.max(0,Math.min(1,g.left/g.tot)):1))));
+  $('#bStart').textContent=g.run?'⏸ Pause':(g.active?'▶ Resume':'▶ Start');
+  $('#bSkip').hidden=!brk;
+  ['#inF','#inB'].forEach(function(s){$(s).disabled=g.active});
+  document.title=g.run?(F.fmt(g.left)+' · '+(brk?'Break':'Focus')+' — Emerging Sciences'):'Focus Mode — Emerging Sciences'}
+function renderStats(){
+  var m=LS.g('study',{}),gs=goalMin()*60,today=m[dayKey()]||0,log=LS.g('focuslog',[]),dk=dayKey(),g=F.get();
+  var rounds=log.filter(function(x){return x.d===dk&&x.done}).length,left=log.filter(function(x){return x.d===dk}).reduce(function(a,x){return a+(x.leaves||0)},0)+g.lv;
+  $('#goalBar').style.width=Math.min(100,today/gs*100)+'%';
+  $('#goalTxt').textContent=mins(today)+' / '+goalMin()+' min goal'+(today>=gs?' — goal reached 🎉':'');
+  $('#tMin').textContent=mins(today);$('#tStreak').textContent=streak(m,gs);$('#tRounds').textContent=rounds;$('#tLeft').textContent=left;
+  var days=[],i,d;for(i=6;i>=0;i--){d=new Date();d.setDate(d.getDate()-i);days.push({l:d.toLocaleDateString('en-IN',{weekday:'short'}),v:m[dayKey(d)]||0})}
+  var max=Math.max(gs,Math.max.apply(null,days.map(function(x){return x.v})));
+  $('#wk').innerHTML=days.map(function(x){var h=Math.round(x.v/max*100);return '<div><em>'+(x.v?mins(x.v):'')+'</em><i class="'+(x.v>=gs?'hit':'')+'" style="height:'+h+'%"></i><small>'+esc(x.l)+'</small></div>'}).join('');
+  var rec=log.slice(-6).reverse();
+  $('#hist').innerHTML=rec.length?rec.map(function(x){var dt=new Date(x.t||Date.now());
+    return '<li>'+esc(dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'}))+' · <b>'+mins(x.sec)+' min</b>'+(x.subj?' · '+esc(x.subj):'')+(x.leaves?' · left '+x.leaves+'×':'')+(x.done?'':' · stopped early')+'</li>'}).join(''):'<li>No rounds yet. Start your first one above.</li>'}
+
+function applyCfg(){var c=F.cfg();$('#inF').value=c.f;$('#inB').value=c.b;$('#oWake').checked=c.wake;$('#oNote').checked=c.note;$('#oStrict').checked=c.strict;$('#subj').value=c.subj}
+function init(){
+  var names=(D.papers||[]).map(function(p){return p.name});
+  $('#subj').innerHTML='<option value="">Any subject</option>'+names.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>'}).join('');
+  applyCfg();render();renderStats();
+  F.on(function(ev){
+    if(ev&&ev.t){
+      if(ev.t==='away')say('You were away for '+ev.sec+' seconds. Back to study 💪','warn');
+      else if(ev.t==='strict')say('Round ended: you were away for '+ev.sec+' seconds. Start again when ready.','warn');
+      else if(ev.t==='done')say('Round complete! Take a break 🎉','good');
+      else if(ev.t==='breakdone')say('Break is over. Ready for the next round?','good');
+      else if(ev.t==='late')say('Your focus round ended while you were away.','warn');
+      applyCfg();renderStats()}
+    render();if(++tickN%10===0)renderStats()});
+
+  $('#presets').addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a'):null;if(!a)return;e.preventDefault();
+    if(F.get().active)return;F.setCfg({f:+a.dataset.f,b:+a.dataset.b});applyCfg();render()});
+  function readInputs(){if(F.get().active)return;
+    F.setCfg({f:Math.max(1,Math.min(180,parseInt($('#inF').value,10)||25)),b:Math.max(1,Math.min(60,parseInt($('#inB').value,10)||5))});applyCfg();render()}
+  $('#inF').addEventListener('change',readInputs);$('#inB').addEventListener('change',readInputs);
+  $('#subj').addEventListener('change',function(){F.setCfg({subj:$('#subj').value})});
+  $('#oWake').addEventListener('change',function(){F.setCfg({wake:$('#oWake').checked})});
+  $('#oStrict').addEventListener('change',function(){F.setCfg({strict:$('#oStrict').checked})});
+  $('#oNote').addEventListener('change',function(){F.setCfg({note:$('#oNote').checked});
+    if($('#oNote').checked&&window.Notification&&Notification.permission==='default'){try{Notification.requestPermission()}catch(e){}}
+    if($('#oNote').checked&&!window.Notification)say('This browser does not support notifications.','warn')});
+
+  $('#bStart').addEventListener('click',function(){say('');F.toggle()});
+  $('#bReset').addEventListener('click',function(){say('');F.reset();renderStats()});
+  $('#bSkip').addEventListener('click',function(){say('');F.skipBreak()});
+  $('#bZen').addEventListener('click',function(){
+    var on=document.body.classList.toggle('zen');$('#bZen').textContent=on?'✕ Exit zen':'⛶ Zen mode';
+    try{if(on&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){});
+        else if(!on&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen()}catch(e){}});
+  document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement&&document.body.classList.contains('zen')){document.body.classList.remove('zen');$('#bZen').textContent='⛶ Zen mode'}});
+}
+if(F)init();else document.body.insertAdjacentHTML('afterbegin','<p style="padding:20px;color:#fbbf24">Focus timer could not load. Please refresh the page.</p>');
+})();
+</script>
+</body>
+</html>
