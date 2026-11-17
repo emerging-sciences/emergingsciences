@@ -5,7 +5,7 @@
    If the sheet is not configured or cannot be reached, the site simply uses data.js. */
 (function(){
 'use strict';
-var TIMEOUT=3500, CACHE_KEY='es_sheetcache_v1';
+var TIMEOUT=3500, CACHE_KEY='es12_sheetcache_v1';
 
 /* ---------- helpers ---------- */
 function norm(s){return String(s==null?'':s).toLowerCase().replace(/[^a-z0-9]/g,'')}
