@@ -7,12 +7,12 @@ import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, de
 
 // ====== STEP: yahan apni Firebase config paste karo (Firebase console > Project settings > Your apps > Web) ======
 const firebaseConfig = {
-  apiKey: "AIzaSyBNnO1fVE_q1RcSu4kfGDdbevZ-bBe_M38",
-  authDomain: "emerging-sciences-msc.firebaseapp.com",
-  projectId: "emerging-sciences-msc",
-  storageBucket: "emerging-sciences-msc.firebasestorage.app",
-  messagingSenderId: "948669837260",
-  appId: "1:948669837260:web:ea42ca7c4af42853dab769"
+  apiKey: "AIzaSyBhHFjMW_mfBXx3gItuEsBjMKx_YbdOBA0",
+  authDomain: "emergingsciences-22cf5.firebaseapp.com",
+  projectId: "emergingsciences-22cf5",
+  storageBucket: "emergingsciences-22cf5.firebasestorage.app",
+  messagingSenderId: "567565896590",
+  appId: "1:567565896590:web:f96df7765e4030afacf2df"
 };
 // ==========================================================================================================
 
@@ -24,7 +24,7 @@ const MAX = 500;
 // Is UID wale ke comments par "Teacher" tag lagta hai, wo kisi ka bhi comment delete kar sakta hai,
 // aur students ke naye comments ki notification (🔔) isi ko aati hai. Khali rakhoge to ye teeno band rahenge.
 // Same UID firestore.rules me bhi likhna hai.
-export const ADMIN_UIDS = [ /* "6BgsIDeHMyMoLxSwAXmKFigyPKB3" */ ];
+export const ADMIN_UIDS = [ /* "QyYTyoKSEWW0kiaUUCxIlmtHWiG2" */ ];
 const isAdmin = (u) => !!u && ADMIN_UIDS.includes(u.uid);
 export { app, auth, db };
 
