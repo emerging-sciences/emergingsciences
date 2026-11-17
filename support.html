@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Support Emerging Sciences — Free Education for MSc Aspirants</title>
+<title>Support Emerging Sciences — Free Education for Competitive Aspirants</title>
 <meta name="description" content="Emerging Sciences is free for every student. If it helped you, you can support it with any amount. Every rupee received and spent is shown publicly.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,14 +22,14 @@ document.documentElement.setAttribute('data-theme',t);
 if(t==='light')document.querySelector('meta[name="theme-color"]').setAttribute('content','#F3F8F5')}catch(e){document.documentElement.setAttribute('data-theme','dark')}})();</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Emerging Sciences">
-<meta property="og:title" content="Support Emerging Sciences — Free Education for MSc Aspirants">
+<meta property="og:title" content="Support Emerging Sciences — Free Education for Competitive Aspirants">
 <meta property="og:description" content="Emerging Sciences is free for every student. If it helped you, support it with any amount. Every rupee received and spent is shown publicly.">
 <meta property="og:url" content="https://emerging-sciences.github.io/emergingsciences/support.html">
 <meta property="og:image" content="https://emerging-sciences.github.io/emergingsciences/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Support Emerging Sciences — Free Education for MSc Aspirants">
+<meta name="twitter:title" content="Support Emerging Sciences — Free Education for Competitive Aspirants">
 <meta name="twitter:description" content="Emerging Sciences is free for every student. If it helped you, support it with any amount. Every rupee received and spent is shown publicly.">
 <meta name="twitter:image" content="https://emerging-sciences.github.io/emergingsciences/og-image.png">
 
@@ -152,7 +152,7 @@ if(t==='light')document.querySelector('meta[name="theme-color"]').setAttribute('
 
     h+='<div class="card"><div class="who"><div class="av">'+(S.photo?'<img src="'+esc(S.photo)+'" alt="'+esc(name)+'">':esc(name.charAt(0).toUpperCase()))+'</div>'
      +'<div><h2 style="margin:0">Hi, I’m '+esc(name)+'</h2><div style="color:var(--text2);font-size:14px">Creator of Emerging Sciences</div></div></div>'
-     +'<p style="margin:12px 0 0">I am building this website to give IIT JAM, CUET PG, TIFR, GATE and CSIR NET students free lectures, notes and mock tests. Adding good content for every subject takes a lot of time and some tools that cost money, so I am asking for your support.</p>'
+     +'<p style="margin:12px 0 0">I am building this website to give JEE, NDA, NEET, CUET, AND MORE EXAMS students free lectures, notes and mock tests. Adding good content for every subject takes a lot of time and some tools that cost money, so I am asking for your support.</p>'
      +'<div class="stats">'+st.map(function(s){return '<div class="stat"><b>'+s[0]+'</b><span>'+s[1]+'</span></div>'}).join('')+'</div></div>';
 
     if(S.story&&S.story.photo){
@@ -198,7 +198,7 @@ if(t==='light')document.querySelector('meta[name="theme-color"]').setAttribute('
     h+='</div>';
 
     h+='<div class="card"><h2>No money? You can still help</h2><ul>'
-     +'<li>Share the website with one friend preparing for an MSc entrance exam.</li>'
+     +'<li>Share the website with one friend preparing for an Competitive entrance exam.</li>'
      +'<li>Tell me which topics you need next.</li>'
      +'<li>If you are a teacher or a topper and can contribute notes or a lecture, contact me — your name will be credited.</li></ul>'
      +'<a class="btn alt" id="share" href="#">Share this website</a>'
@@ -216,7 +216,7 @@ if(t==='light')document.querySelector('meta[name="theme-color"]').setAttribute('
     };
     var sh=document.getElementById('share');
     if(sh)sh.onclick=function(e){e.preventDefault();var u=location.origin+location.pathname.replace(/support\.html$/,'index.html');
-      if(navigator.share){navigator.share({title:'Emerging Sciences',text:'Free lectures, notes and mock tests for IIT JAM, CUET PG, TIFR, GATE and CSIR NET.',url:u}).catch(function(){})}
+      if(navigator.share){navigator.share({title:'Emerging Sciences',text:'Free lectures, notes and mock tests for JEE, NDA, NEET, CUET AND MORE EXMAS.',url:u}).catch(function(){})}
       else if(navigator.clipboard){navigator.clipboard.writeText(u);sh.textContent='Link copied ✓'}};
   }
   draw((S.ledger||[]).concat(jget('es_ledgercache',[])));
