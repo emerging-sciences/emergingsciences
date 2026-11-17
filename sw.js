@@ -1,4 +1,4 @@
-const CACHE = "emerging-sciences-v15";
+const CACHE = "es-entrance-v1";
 
 // Core pages and assets to keep available offline
 const CORE = [
@@ -42,7 +42,7 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("es-entrance-") && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
