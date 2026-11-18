@@ -57,12 +57,12 @@ function subjCards(page,ex,p){page=page||'lectures';const d=done(),q=`?e=${ex.id
 function resolve(){const sid=P.get('s'),sp=sid=='full'||sid=='all';let sub=sid=='all'?ALL:sid=='full'?fullOf(null):S(sid),ex=EX(P.get('e'));if(sub&&!sp&&(!ex||!ex.subjects.includes(sub.id)))ex=examOf(sub.id);let p=null;if(ex&&hasP(ex)&&sid!='all'){const ok=x=>ex.papers.includes(x)?x:ex.papers[0];if(sub&&sid!='full')p=ok(subP(sub));else{const q=P.get('p');p=ex.papers.includes(q)?q:(sub?ex.papers[0]:null)}}
  if(sid=='full')sub=fullOf(p);
  return {ex,sub:ex?sub:null,p}}
-/* Exam essentials: Exam Pattern + Syllabus + PYQs of the WHOLE exam (all subjects mixed), shown at the top of step 3 on every page. */
-function examTop(ex){return `<h3 class="ex-top-h">Exam essentials · pattern, syllabus &amp; previous-year papers</h3><div class="a-grid ex-top">${matExtra(ex,null)}<a class="a-card" href="${href(ex.site)}" target="_blank" rel="noopener noreferrer"><span class="ic">🌐</span><h3>Official website</h3><small>${esc(ex.body)}</small></a></div>`}
+/* Exam essentials: Exam Pattern + Syllabus + PYQs of the WHOLE exam (all subjects mixed), shown at the top of step 3 on the MATERIAL tab only. */
+function examTop(ex){return `<h3 class="ex-top-h">Exam essentials · pattern, syllabus &amp; previous-year papers</h3><div class="a-grid ex-top">${matExtra(ex,null)}</div>`}
 function stepView(page,ex,p){const hp=hasP(ex),c=ex.date?`${cd(ex)} (${esc(ex.dateText)}, ${esc(ex.note)})`:`Date awaited — ${esc(ex.note)}`;
- if(hp&&!p)return `<section class="section"><div class="section-inner">${crumbs(page,ex)}<h1 class="a-h">${esc(ex.name)}</h1><p>Step 3 — see the exam pattern, syllabus and PYQs, then choose ${page=='mock'?'the full-length mock or a subject':'your subject'} · ${c}</p>${examTop(ex)}<h3 class="ex-top-h">${page=='mock'?'Full-length mock &amp; subjects':'Subjects'}</h3>${paperCards(page,ex)}</div></section>`;
+ if(hp&&!p)return `<section class="section"><div class="section-inner">${crumbs(page,ex)}<h1 class="a-h">${esc(ex.name)}</h1>${page=='material'?`<p>Step 3 — see the exam pattern, syllabus and PYQs, then choose your subject · ${c}</p>${examTop(ex)}<h3 class="ex-top-h">Subjects</h3>`:`<p>Step 3 — choose ${page=='mock'?'the full-length mock or a subject':'your subject'} · ${c}</p>`}${paperCards(page,ex)}</div></section>`;
  const pp=hp?PAP(p):null;
- return `<section class="section"><div class="section-inner">${crumbs(page,ex,null,pp)}<h1 class="a-h">${pp?pp.icon+' '+esc(pp.name):esc(ex.name)}</h1><p>${pp?step3Text[page]:stepText[page]} · ${c}</p>${!pp&&page!='material'?examTop(ex):''}${subjCards(page,ex,p)}</div></section>`}
+ return `<section class="section"><div class="section-inner">${crumbs(page,ex,null,pp)}<h1 class="a-h">${pp?pp.icon+' '+esc(pp.name):esc(ex.name)}</h1><p>${pp?step3Text[page]:stepText[page]} · ${c}</p>${subjCards(page,ex,p)}</div></section>`}
 function paperCards(page,ex){return `<div class="a-grid">`+(page=='mock'?allCard(ex):'')+papersOf(ex).map(pp=>{const T=topicsOf(ex,pp.id);let n;
   if(page=='lectures'){const k=T.reduce((a,s)=>a+LECS(s.id).length,0);n=k?k+' lectures':'Lectures coming soon'}
   else if(page=='material'){const k=T.reduce((a,s)=>a+D.material.filter(m=>m.s==s.id).length,0);n=k?k+' PDFs · Syllabus · PYQs · Pattern':'Syllabus, PYQs & Exam Pattern'}
@@ -86,7 +86,8 @@ function pyqCard(r){return `<div class="a-card"><h3>${esc(r.y)}${r.g?' · '+esc(
 function portalBox(id,pid){const p=portal(id,pid);if(!p)return '';
  return `<div class="a-card"><h3>🌐 Official source</h3><small>All years and the latest papers are always on the official page.</small><div class="btns"><a href="${href(p.url)}" target="_blank" rel="noopener noreferrer">${esc(p.label||'Official page')} ↗</a>${p.more?`<a href="${href(p.more)}" target="_blank" rel="noopener noreferrer">${esc(p.moreLabel||'More')} ↗</a>`:''}</div></div>`}
 function matExtra(ex,p){const q=`?e=${ex.id}${p?'&p='+p:''}&s=`,sy=syEx(ex.id,p),py=pyEx(ex.id,p),pt=portal(ex.id,p),yr=py.map(r=>+r.y),pa=patEx(ex.id,p);
- return (sy.length?`<a class="a-card" href="material.html${q}syllabus"><span class="ic">📋</span><h3>Syllabus</h3><small>${sy.length} document${sy.length==1?'':'s'}</small></a>`:`<div class="a-card dim"><span class="ic">📋</span><h3>Syllabus</h3><small>Coming soon</small></div>`)
+ const nt=(hasP(ex)?(p?[PAP(p)]:papersOf(ex)):[null]).reduce((n,g)=>n+topicsOf(ex,g&&g.id).length,0);
+ return (sy.length||nt?`<a class="a-card" href="material.html${q}syllabus"><span class="ic">📋</span><h3>Syllabus</h3><small>${sy.length?sy.length+' document'+(sy.length==1?'':'s')+' · ':''}${nt} topic${nt==1?'':'s'}</small></a>`:`<div class="a-card dim"><span class="ic">📋</span><h3>Syllabus</h3><small>Coming soon</small></div>`)
  +(py.length||pt?`<a class="a-card" href="material.html${q}pyqs"><span class="ic">🗂️</span><h3>PYQs · Year-wise</h3><small>${py.length?py.length+' paper'+(py.length==1?'':'s')+' · '+rng(yr):'Official papers page'}</small></a>`:`<div class="a-card dim"><span class="ic">🗂️</span><h3>PYQs · Year-wise</h3><small>Coming soon</small></div>`)
  +(pa.length?`<a class="a-card" href="material.html${q}pattern"><span class="ic">📊</span><h3>Exam Pattern</h3><small>${esc(pa[0].sm||'Paper structure & marks distribution')}</small></a>`:`<div class="a-card dim"><span class="ic">📊</span><h3>Exam Pattern</h3><small>Coming soon</small></div>`)}
 function patCard(r,p){const nt=((r.pn&&p&&r.pn[p])||[]).concat(r.notes||[]),rows=r.rows||[];
@@ -94,19 +95,19 @@ function patCard(r,p){const nt=((r.pn&&p&&r.pn[p])||[]).concat(r.notes||[]),rows
  ${(r.facts||[]).length?`<dl class="pat-facts">${r.facts.map(f=>`<div><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join('')}</dl>`:''}
  ${rows.length?`<div class="pat-tbl"><table><thead><tr>${(r.cols||[]).map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows.map(x=>`<tr${x[0]=='Total'?' class="tot"':''}>${x.map((c,i)=>`<td data-label="${esc((r.cols||[])[i]||'')}">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:''}
  ${nt.length?`<ul class="pat-notes">${nt.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}
- ${(r.src||[]).length?`<div class="btns">${r.src.map(s=>`<a href="${href(s[1])}" target="_blank" rel="noopener noreferrer">${esc(s[0])} ↗</a>`).join('')}</div>`:''}</div>`}
+</div>`}
 function patView(ex,p){const pp=p?PAP(p):null,L=patEx(ex.id,p);
  return `<section class="section"><div class="section-inner">${crumbs('material',ex,'Exam Pattern',pp)}<h1 class="a-h">📊 ${esc(ex.short)}${pp?' '+esc(pp.name):''} · Exam Pattern</h1><p>${esc(ex.name)} · paper structure, marks distribution and marking scheme</p>
  ${L.map(r=>patCard(r,p)).join('')||'<p>The exam pattern for this paper is coming soon.</p>'}
- <p class="pat-foot">Compiled from the latest official notifications and bulletins, checked on ${esc(D.patternsChecked||'')}. Exam bodies can change the pattern, so always confirm it on the official website (button above).</p></div></section>`}
+ <p class="pat-foot">Compiled from the latest official notifications and bulletins, checked on ${esc(D.patternsChecked||'')}. Exam bodies can change the pattern, so please confirm it in the latest official notification.</p></div></section>`}
 function sylView(ex,p){const L=syEx(ex.id,p),pp=p?PAP(p):null,gs=hasP(ex)?(p?[PAP(p)]:papersOf(ex)):[null];
  const tp=gs.map(g=>{const T=topicsOf(ex,g&&g.id);if(!T.length)return '';
   return `<h3 class="syl-h">${g?g.icon+' '+esc(g.name)+' — ':''}topics covered on this site</h3><div class="chips syl-t">${T.map(s=>(s.live&&LECS(s.id).length)?`<a href="lectures.html?e=${ex.id}&s=${s.id}">${esc(s.name)}</a>`:`<span class="dimchip">${esc(s.name)}</span>`).join('')}</div>`}).join('');
- return `<section class="section"><div class="section-inner">${crumbs('material',ex,'Syllabus',pp)}<h1 class="a-h">📋 ${esc(ex.short)}${pp?' '+esc(pp.name):''} Syllabus</h1><p>${esc(ex.name)} · ${L.length} official link${L.length==1?'':'s'} · topic list below</p>
- <div class="a-grid">${L.map(synCard).join('')||'<p>Syllabus for this exam is coming soon.</p>'}</div>${tp}
- <p class="pat-foot">The syllabus on the official website is the final authority. Greyed topics are coming soon here.</p></div></section>`}
+ return `<section class="section"><div class="section-inner">${crumbs('material',ex,'Syllabus',pp)}<h1 class="a-h">📋 ${esc(ex.short)}${pp?' '+esc(pp.name):''} Syllabus</h1><p>${esc(ex.name)} · ${L.length?L.length+' document'+(L.length==1?'':'s')+' · ':''}subject-wise topic list</p>
+ ${L.length?`<div class="a-grid">${L.map(synCard).join('')}</div>`:''}${tp||(L.length?'':'<p>Syllabus for this exam is coming soon.</p>')}
+ <p class="pat-foot">Greyed topics are coming soon here.</p></div></section>`}
 function pyqView(ex,p){const pp=p?PAP(p):null,all=pyEx(ex.id,p),gs=[...new Set(all.map(r=>r.g).filter(Boolean))],g=P.get('g')||'all',L=all.filter(r=>g=='all'||r.g==g),yr=all.map(r=>+r.y);
- return `<section class="section"><div class="section-inner">${crumbs('material',ex,'PYQs',pp)}<h1 class="a-h">🗂️ ${esc(ex.short)}${pp?' '+esc(pp.name):''} · Year-wise PYQs</h1><p>${all.length?`${all.length} paper${all.length==1?'':'s'} · ${rng(yr)} · 📄 Paper, 🔑 Answer key`:'Year-wise PDFs for this exam are being added. Use the official page below meanwhile.'}</p>
+ return `<section class="section"><div class="section-inner">${crumbs('material',ex,'PYQs',pp)}<h1 class="a-h">🗂️ ${esc(ex.short)}${pp?' '+esc(pp.name):''} · Year-wise PYQs</h1><p>${all.length?`${all.length} paper${all.length==1?'':'s'} · ${rng(yr)} · 📄 Paper, 🔑 Answer key`:'Year-wise PDFs for this exam are being added.'}</p>
  ${gs.length>1?`<div class="chips">${['all',...gs].map(a=>`<a class="${g==a?'on':''}" href="?e=${ex.id}${p?'&p='+p:''}&s=pyqs&g=${encodeURIComponent(a)}">${a=='all'?'All':esc(a)}</a>`).join('')}</div>`:''}
  <div class="a-grid">${L.map(pyqCard).join('')}</div>
  <div class="a-grid" style="margin-top:1.2rem">${portalBox(ex.id,p)}</div></div></section>`}

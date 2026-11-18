@@ -13,10 +13,10 @@ Content sirf `data.js` me add hota hai. Pages khud ban jaate hain.
 Har exam ke block me: `date` (pehla exam din, `YYYY-MM-DD`; official date na aaye to khali `""`), `end` (multi-day exam ka aakhri din, optional), `dateText` (card par jo dikhe, jaise `20–28 Jan 2027`; khali date par `Date awaited`), `note` (ek chhoti line), `dsrc` (date kahan se li — exam body ka notice / calendar), `site` (official website). Home par `datesChecked` (data.js ke upar-neeche) me jis din dates check ki, wo likho. Sirf official announcement par hi date bharo; baaki `Date awaited`.
 
 ## Exam essentials (Step 3 — Exam Pattern, Syllabus, PYQs)
-Category → Exam kholte hi, subject chunne se pehle, sabse upar 3 card aate hain: **Exam Pattern**, **Syllabus**, **PYQs** (+ Official website). Subject ke andar bhi wahi 3 card hain (subject-wise notes ke saath).
-- **Exam Pattern:** `patterns` me ek entry per exam: `{"e":"jeemain","t":"…","ed":"…","sm":"card par ek line","facts":[[label,value]…],"cols":[…],"rows":[[…]…],"notes":[…],"pn":{"ph":["Physics ke liye line"]},"src":[[label,url]]}`. `pn` = subject-wise line (subject id ke hisaab se).
-- **Syllabus:** `syllabus` me `{"e":"jeemain","t":"…","url":"official link","src":"…","n":"…"}`. `p` (subject) na likho to row poore exam ke liye hai (har subject me dikhegi). Syllabus page par is site ke topics bhi subject-wise dikhte hain.
-- **PYQs:** `pyqPortals` me official papers page; saal-wise PDF ke liye `pyqs` me `{"e","y","t","qp","key"}` (Google Sheet ka PYQs tab bhi chalta hai; subject khali = poore exam ke liye).
+**Sirf Material tab me:** Category → Exam kholte hi, subject chunne se pehle, sabse upar 3 card aate hain: **Exam Pattern**, **Syllabus**, **PYQs**. Subject ke andar bhi wahi 3 card hain (subject-wise notes ke saath). Lectures aur Mock me ye card nahi hain. Official website ka link sirf Home ke exam card par hai (`site`).
+- **Exam Pattern:** `patterns` me ek entry per exam: `{"e":"jeemain","t":"…","ed":"…","sm":"card par ek line","facts":[[label,value]…],"cols":[…],"rows":[[…]…],"notes":[…],"pn":{"ph":["Physics ke liye line"]}}`. `pn` = subject-wise line (subject id ke hisaab se).
+- **Syllabus:** `syllabus` me `{"e":"jeemain","t":"…","url":"PDF / link","src":"…","n":"…"}` (abhi khali hai; Google Sheet ka Syllabus tab bhi chalta hai). `p` (subject) na likho to row poore exam ke liye hai (har subject me dikhegi). Syllabus page par is site ke topics bhi subject-wise dikhte hain.
+- **PYQs:** saal-wise PDF ke liye `pyqs` me `{"e","y","t","qp","key"}` (Google Sheet ka PYQs tab bhi chalta hai; subject khali = poore exam ke liye).
 
 ## Mock instructions — har exam ke apne
 Mock test kholte hi us exam ke **official instructions** dikhte hain (`exam-info.js` me har exam ka block). Exam `cfg.exam` se ya test id ke shuru se pehchana jata hai (`neet-full-1` → NEET, `nda-full-1` → NDA, `jeemain-full-1` → JEE Main…). Negative marking aur notes `test.html` ke `RULES` me hain (har exam ke liye alag).

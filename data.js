@@ -1798,220 +1798,9 @@ window.ES_DATA = {
   }
  ],
  "mocks": [],
- "syllabus": [
-  {
-   "e": "iiser",
-   "t": "IISER — official syllabus",
-   "url": "https://www.iiseradmission.in/",
-   "src": "IISER Joint Admission Committee",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "nest",
-   "t": "NEST — official syllabus",
-   "url": "https://www.nestexam.in/",
-   "src": "NISER Bhubaneswar & UM-DAE CEBS",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "jeemain",
-   "t": "JEE Main — official syllabus",
-   "url": "https://jeemain.nta.nic.in/",
-   "src": "National Testing Agency (NTA)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "jeeadv",
-   "t": "JEE Advanced — official syllabus",
-   "url": "https://jeeadv.ac.in/",
-   "src": "IITs (organising IIT changes yearly)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "neet",
-   "t": "NEET UG — official syllabus",
-   "url": "https://neet.nta.nic.in/",
-   "src": "National Testing Agency (NTA)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "cuetug",
-   "t": "CUET UG — official syllabus",
-   "url": "https://cuet.nta.nic.in/",
-   "src": "National Testing Agency (NTA)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "bitsat",
-   "t": "BITSAT — official syllabus",
-   "url": "https://www.bitsadmission.com/",
-   "src": "BITS Pilani",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "nda",
-   "t": "NDA — official syllabus",
-   "url": "https://upsc.gov.in/",
-   "src": "UPSC",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "iafxy",
-   "t": "IAF X & Y — official syllabus",
-   "url": "https://agnipathvayu.cdac.in/",
-   "src": "Indian Air Force",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "navy",
-   "t": "Navy — official syllabus",
-   "url": "https://www.joinindiannavy.gov.in/",
-   "src": "Indian Navy",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "cgl",
-   "t": "SSC CGL — official syllabus",
-   "url": "https://ssc.gov.in/",
-   "src": "Staff Selection Commission",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "chsl",
-   "t": "SSC CHSL — official syllabus",
-   "url": "https://ssc.gov.in/",
-   "src": "Staff Selection Commission",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "mts",
-   "t": "SSC MTS — official syllabus",
-   "url": "https://ssc.gov.in/",
-   "src": "Staff Selection Commission",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "gd",
-   "t": "SSC GD — official syllabus",
-   "url": "https://ssc.gov.in/",
-   "src": "Staff Selection Commission",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "cpo",
-   "t": "SSC CPO — official syllabus",
-   "url": "https://ssc.gov.in/",
-   "src": "Staff Selection Commission",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "ntpc",
-   "t": "RRB NTPC — official syllabus",
-   "url": "https://www.rrbcdg.gov.in/",
-   "src": "Railway Recruitment Boards (RRB)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "groupd",
-   "t": "RRB Group D — official syllabus",
-   "url": "https://www.rrbcdg.gov.in/",
-   "src": "Railway Recruitment Boards (RRB)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "alp",
-   "t": "RRB ALP — official syllabus",
-   "url": "https://www.rrbcdg.gov.in/",
-   "src": "Railway Recruitment Boards (RRB)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  },
-  {
-   "e": "rrbje",
-   "t": "RRB JE — official syllabus",
-   "url": "https://www.rrbcdg.gov.in/",
-   "src": "Railway Recruitment Boards (RRB)",
-   "n": "Opens the official website: use its Syllabus / Information Bulletin / Notification link"
-  }
- ],
+ "syllabus": [],
  "pyqs": [],
- "pyqPortals": {
-  "iiser": {
-   "url": "https://www.iiseradmission.in/",
-   "label": "Official website — IISER"
-  },
-  "nest": {
-   "url": "https://www.nestexam.in/",
-   "label": "Official website — NEST"
-  },
-  "jeemain": {
-   "url": "https://jeemain.nta.nic.in/",
-   "label": "Official website — JEE Main"
-  },
-  "jeeadv": {
-   "url": "https://jeeadv.ac.in/",
-   "label": "Official website — JEE Advanced"
-  },
-  "neet": {
-   "url": "https://neet.nta.nic.in/",
-   "label": "Official website — NEET UG"
-  },
-  "cuetug": {
-   "url": "https://cuet.nta.nic.in/",
-   "label": "Official website — CUET UG"
-  },
-  "bitsat": {
-   "url": "https://www.bitsadmission.com/",
-   "label": "Official website — BITSAT"
-  },
-  "nda": {
-   "url": "https://upsc.gov.in/",
-   "label": "Official website — NDA"
-  },
-  "iafxy": {
-   "url": "https://agnipathvayu.cdac.in/",
-   "label": "Official website — IAF X & Y"
-  },
-  "navy": {
-   "url": "https://www.joinindiannavy.gov.in/",
-   "label": "Official website — Navy"
-  },
-  "cgl": {
-   "url": "https://ssc.gov.in/",
-   "label": "Official website — SSC CGL"
-  },
-  "chsl": {
-   "url": "https://ssc.gov.in/",
-   "label": "Official website — SSC CHSL"
-  },
-  "mts": {
-   "url": "https://ssc.gov.in/",
-   "label": "Official website — SSC MTS"
-  },
-  "gd": {
-   "url": "https://ssc.gov.in/",
-   "label": "Official website — SSC GD"
-  },
-  "cpo": {
-   "url": "https://ssc.gov.in/",
-   "label": "Official website — SSC CPO"
-  },
-  "ntpc": {
-   "url": "https://www.rrbcdg.gov.in/",
-   "label": "Official website — RRB NTPC"
-  },
-  "groupd": {
-   "url": "https://www.rrbcdg.gov.in/",
-   "label": "Official website — RRB Group D"
-  },
-  "alp": {
-   "url": "https://www.rrbcdg.gov.in/",
-   "label": "Official website — RRB ALP"
-  },
-  "rrbje": {
-   "url": "https://www.rrbcdg.gov.in/",
-   "label": "Official website — RRB JE"
-  }
- },
+ "pyqPortals": {},
  "patterns": [
   {
    "e": "jeemain",
@@ -2078,12 +1867,6 @@ window.ES_DATA = {
     "Negative marking (−1) applies in both Section A and Section B.",
     "This is Paper 1 (B.E./B.Tech). Papers for B.Arch / B.Planning are in the NTA Information Bulletin."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://jeemain.nta.nic.in/"
-    ]
-   ],
    "pn": {
     "ph": [
      "Physics: 25 questions = 100 marks (20 MCQ + 5 numerical)."
@@ -2144,12 +1927,6 @@ window.ES_DATA = {
     "JEE Advanced changes the question types and the marking scheme (negative / partial marking) from year to year — the marks of every section are written in the paper itself.",
     "Only the top 2,50,000 JEE Main candidates can appear.",
     "Read the official information brochure of the year before you attempt a mock."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://jeeadv.ac.in/"
-    ]
    ],
    "pn": {
     "ph": [
@@ -2222,12 +1999,6 @@ window.ES_DATA = {
     "Every question has four options, only one correct.",
     "Mock tests on this site use an on-screen test window for practice."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://neet.nta.nic.in/"
-    ]
-   ],
    "pn": {
     "ph": [
      "Physics: 45 questions = 180 marks."
@@ -2292,12 +2063,6 @@ window.ES_DATA = {
    "notes": [
     "Physics, Chemistry, Mathematics and Biology are domain subjects; questions come from the NCERT Class 12 syllabus.",
     "Every subject is a separate test paper with its own timer."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://cuet.nta.nic.in/"
-    ]
    ],
    "pn": {
     "ph": [
@@ -2388,12 +2153,6 @@ window.ES_DATA = {
    "notes": [
     "Check the BITS Pilani brochure for the exact rules of the bonus questions."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://www.bitsadmission.com/"
-    ]
-   ],
    "pn": {
     "ph": [
      "Physics: 30 questions = 90 marks."
@@ -2467,12 +2226,6 @@ window.ES_DATA = {
    ],
    "notes": [
     "Every question has four options, only one correct."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://www.iiseradmission.in/"
-    ]
    ],
    "pn": {
     "ph": [
@@ -2550,12 +2303,6 @@ window.ES_DATA = {
    ],
    "notes": [
     "The number of questions, the marks per question type and the negative-marking rule can change every year — read the NEST brochure of the year before attempting a mock."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://www.nestexam.in/"
-    ]
    ],
    "pn": {
     "ph": [
@@ -2641,12 +2388,6 @@ window.ES_DATA = {
     "General Ability Test: 4 marks per question, wrong answer −1.33.",
     "More than one answer marked = treated as a wrong answer; a blank answer carries no penalty."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://upsc.gov.in/"
-    ]
-   ],
    "pn": {
     "ma": [
      "Paper I: Mathematics — 120 questions, 300 marks."
@@ -2731,12 +2472,6 @@ window.ES_DATA = {
     "Questions are based on the 10+2 CBSE syllabus.",
     "Phase I is followed by the physical fitness test, adaptability tests and a medical examination."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://agnipathvayu.cdac.in/"
-    ]
-   ],
    "pn": {
     "ph": [
      "Physics: 25 questions (Science group)."
@@ -2785,12 +2520,6 @@ window.ES_DATA = {
    ],
    "notes": [
     "The number of questions, the duration and the negative-marking rule are printed in the official notification and sample paper on joinindiannavy.gov.in — confirm them there for the batch you apply for."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://www.joinindiannavy.gov.in/"
-    ]
    ],
    "pn": {
     "ma": [
@@ -2865,12 +2594,6 @@ window.ES_DATA = {
    "notes": [
     "General Awareness includes General Science (Physics, Chemistry, Biology)."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://ssc.gov.in/"
-    ]
-   ],
    "pn": {
     "ma": [
      "Quantitative Aptitude: 25 questions = 50 marks."
@@ -2943,12 +2666,6 @@ window.ES_DATA = {
    ],
    "notes": [
     "General Awareness includes General Science."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://ssc.gov.in/"
-    ]
    ],
    "pn": {
     "ma": [
@@ -3033,12 +2750,6 @@ window.ES_DATA = {
    "notes": [
     "Not attempting a session disqualifies the candidate."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://ssc.gov.in/"
-    ]
-   ],
    "pn": {
     "ma": [
      "Numerical & Mathematical Ability: 20 questions = 60 marks (Session I, no negative marking)."
@@ -3115,12 +2826,6 @@ window.ES_DATA = {
    ],
    "notes": [
     "General Knowledge & General Awareness includes General Science."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://ssc.gov.in/"
-    ]
    ],
    "pn": {
     "ma": [
@@ -3199,12 +2904,6 @@ window.ES_DATA = {
    "notes": [
     "General Knowledge & General Awareness includes General Science."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://ssc.gov.in/"
-    ]
-   ],
    "pn": {
     "ma": [
      "Quantitative Aptitude: 50 questions = 50 marks."
@@ -3272,12 +2971,6 @@ window.ES_DATA = {
    ],
    "notes": [
     "General Awareness includes General Science and current affairs."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://www.rrbcdg.gov.in/"
-    ]
    ],
    "pn": {
     "ma": [
@@ -3350,12 +3043,6 @@ window.ES_DATA = {
    "notes": [
     "General Science is based on the Class 10 level syllabus of Physics, Chemistry and Life Sciences."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://www.rrbcdg.gov.in/"
-    ]
-   ],
    "pn": {
     "ma": [
      "Mathematics: 25 questions."
@@ -3427,12 +3114,6 @@ window.ES_DATA = {
    "notes": [
     "CBT-2 has Part A (Mathematics, reasoning, basic science & engineering) and Part B (trade subject) — see the notification."
    ],
-   "src": [
-    [
-     "Official site",
-     "https://www.rrbcdg.gov.in/"
-    ]
-   ],
    "pn": {
     "ma": [
      "Mathematics: 20 questions."
@@ -3500,12 +3181,6 @@ window.ES_DATA = {
    ],
    "notes": [
     "CBT-2 tests basic sciences and the engineering discipline of the post — see the notification."
-   ],
-   "src": [
-    [
-     "Official site",
-     "https://www.rrbcdg.gov.in/"
-    ]
    ],
    "pn": {
     "ma": [

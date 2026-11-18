@@ -129,7 +129,7 @@ function intro(){
  const TN={MCQ:'MCQ (one correct option)',MSQ:'MSQ (one or more correct options)',NAT:'NAT (numerical answer)'};
  const ins=[...new Set(Q.map(x=>x.t))].map(t=>'<li><b>'+(TN[t]||t)+':</b> '+(RULE.note[t]||RULES._.note[t])+'</li>').join('');
  app.innerHTML=`<div class=card><h2>${CFG.title}</h2><p>Total Questions: <b>${qTxt}</b> &nbsp;·&nbsp; Maximum Marks: <b>${tot}</b> &nbsp;·&nbsp; Duration: <b>${CFG.minutes} minutes</b></p>
- <h3>Marking Scheme${RULE.name?' — '+RULE.name+' pattern':''}</h3><table><tr><th>Section</th><th>Questions</th><th>Marks</th><th>Negative marking</th></tr>${pat}<tr><th>Total</th><th>${qTxt}</th><th>${tot}</th><th>${nsTxt}</th></tr></table>${EXI?`<h3>Official ${EXI.short} instructions</h3><p style="margin:0 0 6px;font-size:13px;color:#556">${EXI.org} · ${EXI.mode}<br>Follows: ${EXI.asof}</p><ul>${EXI.lines.map(x=>'<li>'+x+'</li>').join('')}</ul><p style="font-size:12.5px;color:#556">Always confirm the latest rules on the official site: ${EXI.src.map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener noreferrer">'+s[0]+' ↗</a>').join(' · ')}</p>`:''}
+ <h3>Marking Scheme${RULE.name?' — '+RULE.name+' pattern':''}</h3><table><tr><th>Section</th><th>Questions</th><th>Marks</th><th>Negative marking</th></tr>${pat}<tr><th>Total</th><th>${qTxt}</th><th>${tot}</th><th>${nsTxt}</th></tr></table>${EXI?`<h3>Official ${EXI.short} instructions</h3><p style="margin:0 0 6px;font-size:13px;color:#556">${EXI.org} · ${EXI.mode}<br>Follows: ${EXI.asof}</p><ul>${EXI.lines.map(x=>'<li>'+x+'</li>').join('')}</ul>`:''}
  ${CFG.instr&&CFG.instr.length?`<h3>Instructions for this mock</h3><ul>${CFG.instr.map(x=>'<li>'+x+'</li>').join('')}</ul>`:''}
  <h3>Test window instructions</h3><ul>
  ${ins}

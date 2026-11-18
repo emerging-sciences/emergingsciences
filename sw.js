@@ -1,4 +1,4 @@
-const CACHE = "es-entrance-v2";
+const CACHE = "es-entrance-v3";
 
 // Core pages and assets to keep available offline
 const CORE = [
