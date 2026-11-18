@@ -87,3 +87,10 @@ body{padding-bottom:100px}
  .pat-tbl tr.tot{background:var(--surface2)}
  .pat-tbl tr.tot td{background:none}
 }
+/* Exam-level Full-Length Mock card (Mock tab, subject-list step): full width + highlighted */
+.a-card.full-card{grid-column:1/-1;display:flex;align-items:center;gap:14px;border-color:var(--blue-mid);background:var(--blue-light)}
+.a-card.full-card .ic{font-size:30px;line-height:1}.a-card.full-card .fl-t{flex:1;min-width:0}
+.section-inner .a-card.full-card h3{margin:0;color:var(--text)}.a-card.full-card small{margin-top:3px}
+.a-card.full-card .fl-n{font-weight:600;font-size:13px;color:var(--blue);white-space:nowrap}
+a.a-card.full-card:hover{background:var(--blue-mid)}
+@media(max-width:480px){.a-card.full-card{gap:10px;padding:14px}.a-card.full-card .fl-n{font-size:12px}}

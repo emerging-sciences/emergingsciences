@@ -19,8 +19,16 @@ const pageTitle={lectures:'Lectures',material:'Study Material',mock:'Mock Tests'
 const DEFP='ma',PAP=id=>(D.papers||[]).find(x=>x.id==id),papersOf=e=>(e.papers||[]).map(PAP).filter(Boolean),hasP=e=>papersOf(e).length>0;
 const subP=s=>s.p||DEFP,topicsOf=(ex,p)=>ex.subjects.map(S).filter(Boolean).filter(s=>!hasP(ex)||subP(s)==p);
 const mockOf=(ex,sid,p)=>(D.mocks||[]).filter(m=>m.e==ex.id&&m.s==sid&&(!p||sid!='full'||(m.p||DEFP)==p));
-const stepText={lectures:'Step 2 — choose a subject',material:'Step 2 — choose Syllabus, year-wise PYQs, Exam Pattern or a subject',mock:'Step 2 — choose full-length tests or a subject'},
- step3Text={lectures:'Step 3 — choose a topic',material:'Step 3 — choose Syllabus, PYQs, Exam Pattern or a topic',mock:'Step 3 — choose full-length tests or a topic'};
+/* ---- Full-length mocks. Two kinds (data.js -> mocks):
+   exam-level  : "s":"all"                    -> ALL subjects together (JEE = Physics+Chemistry+Maths, NEET = Physics+Chemistry+Biology). Card sits at the subject-list step.
+   subject-level: "s":"full","p":"<subject id>" -> one subject's full test (e.g. Physics Full Test). Card sits inside that subject, above its topics. ---- */
+const ALL={id:'all',name:'Full-Length Mock Tests',icon:'📝',live:true},fullOf=p=>({id:'full',name:(PAP(p)?PAP(p).name+' ':'')+'Full Test',icon:'📝',live:true});
+function allCard(ex){const n=(D.mocks||[]).filter(m=>m.e==ex.id&&m.s=='all').length,nm=papersOf(ex).map(x=>x.name).join(' · '),
+  h=`<span class="ic">📝</span><div class="fl-t"><h3>Full-Length Mock Tests</h3><small>All subjects together${nm?' — '+esc(nm):''}</small></div><span class="fl-n">${n?n+' test'+(n==1?'':'s')+' ›':'Coming soon'}</span>`;
+ return n?`<a class="a-card full-card" href="mock.html?e=${ex.id}&s=all">${h}</a>`:`<div class="a-card full-card dim">${h}</div>`}
+/* Step numbers: 1 category -> 2 exam -> 3 subject (exams with papers) -> 4 topic. An exam without papers goes 2 exam -> 3 topic list (stepText). */
+const stepText={lectures:'Step 3 — choose a subject',material:'Step 3 — choose Syllabus, year-wise PYQs, Exam Pattern or a subject',mock:'Step 3 — choose the full-length mock or a subject'},
+ step3Text={lectures:'Step 4 — choose a topic',material:'Step 4 — choose Syllabus, PYQs, Exam Pattern or a topic',mock:'Step 4 — choose the subject full test or a topic'};
 function dash(){const el=$('#dash');if(!el)return;const t=study()[day()]||0,g=goal(),pct=Math.min(100,t/g*100);
  const up=(D.exams||[]).filter(e=>days(e)>=0).sort((a,b)=>days(a)-days(b))[0];
  el.innerHTML=`<div class="a-card"><b>Daily goal</b><div class="bar"><i style="width:${pct}%"></i></div><small>${Math.floor(t/60)} / ${g/60} min · counts while a lecture plays</small></div>
@@ -38,20 +46,21 @@ function chooser(page){const c=CAT(P.get('c')),H=pageTitle[page];
  return `<section class="section"><div class="section-inner"><div class="crumbs"><a href="${page}.html">${H}</a> › <span>${esc(c.name)}</span></div><h1 class="a-h">${c.icon} ${esc(c.name)}</h1><p>Step 2 — choose your exam</p><div class="a-grid">${D.exams.filter(e=>e.cat==c.id).map(e=>examPick(e,page)).join('')}</div></div></section>`}
 function crumbs(page,e,sub,pp){return `<div class="crumbs"><a href="${page}.html">${pageTitle[page]}</a>${e&&CAT(e.cat)?` › <a href="${page}.html?c=${e.cat}">${esc(CAT(e.cat).name)}</a>`:''}${e?` › <a href="${page}.html?e=${e.id}">${esc(e.short)}</a>`:''}${pp?` › <a href="${page}.html?e=${e.id}&p=${pp.id}">${esc(pp.name)}</a>`:''}${sub?` › <span>${esc(sub)}</span>`:''}</div>`}
 function subjCards(page,ex,p){page=page||'lectures';const d=done(),q=`?e=${ex.id}${p?'&p='+p:''}&s=`,list=topicsOf(ex,p);
- const full=page=='mock'?[{id:'full',name:'Full-Length Mock Tests',icon:'📝',live:true}]:[];
+ const full=page=='mock'?[hasP(ex)?fullOf(p):ALL]:[];
  return `<div class="a-grid">`+(page=='material'?matExtra(ex,p):'')+full.concat(list).map(s=>{
   if(page=='mock'){const T=mockOf(ex,s.id,p);if(!T.length)return `<div class="a-card dim"><span class="ic">${s.icon}</span><h3>${s.name}</h3><small>Coming soon</small></div>`;
    return `<a class="a-card" href="mock.html${q}${s.id}"><span class="ic">${s.icon}</span><h3>${s.name}</h3><small>${T.length} test${T.length==1?'':'s'}</small></a>`}
   if(page=='material'){const M=D.material.filter(m=>m.s==s.id);if(!M.length)return `<div class="a-card dim"><span class="ic">${s.icon}</span><h3>${s.name}</h3><small>Coming soon</small></div>`;return `<a class="a-card" href="material.html${q}${s.id}"><span class="ic">${s.icon}</span><h3>${s.name}</h3><small>${M.length} PDF${M.length==1?'':'s'}</small></a>`}
   if(!s.live||!LECS(s.id).length)return `<div class="a-card dim"><span class="ic">${s.icon}</span><h3>${s.name}</h3><small>Coming soon</small></div>`;
   const L=LECS(s.id),c=L.filter(l=>d[l.id]).length;return `<a class="a-card" href="lectures.html${q}${s.id}"><span class="ic">${s.icon}</span><h3>${s.name}</h3><small>${L.length} lectures · ${c}/${L.length} completed</small><div class="bar"><i style="width:${L.length?c/L.length*100:0}%"></i></div></a>`}).join('')+`</div>`}
-function resolve(){const sid=P.get('s'),sub=sid=='full'?{id:'full',name:'Full-Length Mock Tests',icon:'📝',live:true}:S(sid);let ex=EX(P.get('e'));if(sub&&(!ex||(sid!='full'&&!ex.subjects.includes(sub.id))))ex=sid=='full'?ex:examOf(sub.id);let p=null;if(ex&&hasP(ex)){const ok=x=>ex.papers.includes(x)?x:ex.papers[0];if(sub&&sid!='full')p=ok(subP(sub));else{const q=P.get('p');p=ex.papers.includes(q)?q:(sub?ex.papers[0]:null)}}
+function resolve(){const sid=P.get('s'),sp=sid=='full'||sid=='all';let sub=sid=='all'?ALL:sid=='full'?fullOf(null):S(sid),ex=EX(P.get('e'));if(sub&&!sp&&(!ex||!ex.subjects.includes(sub.id)))ex=examOf(sub.id);let p=null;if(ex&&hasP(ex)&&sid!='all'){const ok=x=>ex.papers.includes(x)?x:ex.papers[0];if(sub&&sid!='full')p=ok(subP(sub));else{const q=P.get('p');p=ex.papers.includes(q)?q:(sub?ex.papers[0]:null)}}
+ if(sid=='full')sub=fullOf(p);
  return {ex,sub:ex?sub:null,p}}
 function stepView(page,ex,p){const hp=hasP(ex),c=`${cd(ex)} (${esc(ex.dateText)}, ${esc(ex.note)})`;
- if(hp&&!p)return `<section class="section"><div class="section-inner">${crumbs(page,ex)}<h1 class="a-h">${esc(ex.name)}</h1><p>Step 2 — choose your subject · ${c}</p>${paperCards(page,ex)}</div></section>`;
+ if(hp&&!p)return `<section class="section"><div class="section-inner">${crumbs(page,ex)}<h1 class="a-h">${esc(ex.name)}</h1><p>Step 3 — choose ${page=='mock'?'the full-length mock or a subject':'your subject'} · ${c}</p>${paperCards(page,ex)}</div></section>`;
  const pp=hp?PAP(p):null;
  return `<section class="section"><div class="section-inner">${crumbs(page,ex,null,pp)}<h1 class="a-h">${pp?pp.icon+' '+esc(pp.name):esc(ex.name)}</h1><p>${pp?step3Text[page]:stepText[page]} · ${c}</p>${subjCards(page,ex,p)}</div></section>`}
-function paperCards(page,ex){return `<div class="a-grid">`+papersOf(ex).map(pp=>{const T=topicsOf(ex,pp.id);let n;
+function paperCards(page,ex){return `<div class="a-grid">`+(page=='mock'?allCard(ex):'')+papersOf(ex).map(pp=>{const T=topicsOf(ex,pp.id);let n;
   if(page=='lectures'){const k=T.reduce((a,s)=>a+LECS(s.id).length,0);n=k?k+' lectures':'Lectures coming soon'}
   else if(page=='material'){const k=T.reduce((a,s)=>a+D.material.filter(m=>m.s==s.id).length,0);n=k?k+' PDFs · Syllabus · PYQs · Pattern':'Syllabus, PYQs & Exam Pattern'}
   else{const k=(D.mocks||[]).filter(m=>m.e==ex.id&&(m.s=='full'?(m.p||DEFP)==pp.id:T.some(s=>s.id==m.s))).length;n=k?k+' test'+(k==1?'':'s'):'Tests coming soon'}
@@ -134,14 +143,14 @@ material(el){const sp=P.get('s'),ex0=EX(P.get('e'));if(ex0&&(sp=='syllabus'||sp=
 mock(el){const {ex,sub,p}=resolve();if(!ex){el.innerHTML=chooser('mock');return}
  if(!sub){el.innerHTML=stepView('mock',ex,p);return}
  const T=mockOf(ex,sub.id,p);
- el.innerHTML=`<section class="section"><div class="section-inner">${crumbs('mock',ex,sub.name,hasP(ex)?PAP(p):null)}<h1 class="a-h">${sub.icon} ${sub.name}</h1><p>${T.length} test${T.length==1?'':'s'}</p>${T.map(m=>`<a class="a-row" href="test.html?t=${m.id}"><span class="num">▶</span><span class="tt">${esc(m.t)}</span><span class="tag">${m.q} Qs · ${m.min} min</span></a>`).join('')||'<p>Tests for this subject are coming soon.</p>'}</div></section>`},
+ el.innerHTML=`<section class="section"><div class="section-inner">${crumbs('mock',ex,sub.name,hasP(ex)?PAP(p):null)}<h1 class="a-h">${sub.icon} ${sub.name}</h1><p>${T.length} test${T.length==1?'':'s'}${sub.id=='all'?' · all subjects together'+(hasP(ex)?' ('+papersOf(ex).map(x=>esc(x.name)).join(' · ')+')':''):''}</p>${T.map(m=>`<a class="a-row" href="test.html?t=${m.id}"><span class="num">▶</span><span class="tt">${esc(m.t)}</span><span class="tag">${m.q} Qs · ${m.min} min</span></a>`).join('')||`<p>${sub.id=='all'?'Full-length mock tests for this exam are coming soon.':'Tests for this subject are coming soon.'}</p>`}</div></section>`},
 search(el){el.innerHTML=`<section class="section"><div class="section-inner"><h1 class="a-h">Search</h1><input id="q" class="a-in" placeholder="Search lectures, notes and mock tests…" value="${esc(P.get('q')||'')}"><div class="chips" id="stabs"></div><div id="res"></div></div></section>`;
  /* mock tests: found by title, exam (JAM, GATE…), subject / topic, or the words "mock" / "test" */
- const mockTopic=m=>m.s=='full'?null:S(m.s),
-  mockText=m=>{const e=EX(m.e)||{},t=mockTopic(m),pp=hasP(e)?PAP(m.s=='full'?(m.p||DEFP):subP(t||{})):null;
-   return [m.t,'mock test tests full length',e.short,e.name,t&&t.name,pp&&pp.name].filter(Boolean).join(' ').toLowerCase()},
+ const mockTopic=m=>m.s=='full'||m.s=='all'?null:S(m.s),
+  mockText=m=>{const e=EX(m.e)||{},t=mockTopic(m),pp=m.s=='all'?null:hasP(e)?PAP(m.s=='full'?(m.p||DEFP):subP(t||{})):null;
+   return [m.t,'mock test tests full length',m.s=='all'&&'all subjects',e.short,e.name,t&&t.name,pp&&pp.name].filter(Boolean).join(' ').toLowerCase()},
   mockRow=m=>{const e=EX(m.e)||{},t=mockTopic(m);
-   return `<a class="a-row" href="test.html?t=${encodeURIComponent(m.id)}"><span class="num">▶</span><span class="tt">${esc(m.t)}<br><small>${esc([e.short||e.name,m.s=='full'?'Full-Length':(t?t.name:'')].filter(Boolean).join(' · '))}</small></span><span class="tag">${m.q} Qs · ${m.min} min</span></a>`};
+   return `<a class="a-row" href="test.html?t=${encodeURIComponent(m.id)}"><span class="num">▶</span><span class="tt">${esc(m.t)}<br><small>${esc([e.short||e.name,m.s=='all'?'Full-Length · All Subjects':m.s=='full'?'Full-Length':(t?t.name:'')].filter(Boolean).join(' · '))}</small></span><span class="tag">${m.q} Qs · ${m.min} min</span></a>`};
  let tab='all';
  const go=()=>{const q=$('#q').value.toLowerCase().trim();if(!q){$('#stabs').innerHTML='';$('#res').innerHTML='';return}
   const l=D.lectures.filter(x=>(x.t+' '+x.n+' '+S(x.s).name).toLowerCase().includes(q)),m=D.material.filter(x=>(x.t+' '+x.d+' '+x.k).toLowerCase().includes(q)),
