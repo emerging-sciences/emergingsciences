@@ -44,6 +44,7 @@ body{padding-bottom:96px}body.testing{padding-bottom:0}body.testing .bnav{displa
 <header><img src="logo-icon.png" alt=""><b>Emerging Sciences</b><span style="opacity:.8">| Mock Test</span><span class="sp"></span><span id="timer"></span><a id="exit" href="mock.html" style="color:#fff;text-decoration:none;font-size:13px;border:1px solid #fff5;border-radius:6px;padding:5px 10px">✕ Exit</a></header>
 <div id="app"></div>
 <script src="mocks.js"></script>
+<script src="exam-info.js"></script>
 <script>
 /* ===== EDIT HERE: test settings ===== */
 const T=(window.ES_MOCKS||{})[new URLSearchParams(location.search).get('t')];
@@ -72,9 +73,29 @@ const RULES={
  cmi:{name:'CMI M.Sc. Mathematics',neg:q=>0,note:{MSQ:'Credit only if <i>all</i> correct options are chosen and no incorrect option is chosen. Negative marking is not mentioned on the official paper.'}},
  /* JEE (Main) — source: NTA JEE (Main) 2026 Information Bulletin, sec. 2.4 (Paper 1: 3 subjects × [Section A 20 MCQ + Section B 5 numerical], 75 Qs, 300 marks, 3 hours).
     +4 correct; MCQ wrong −1; Section B wrong −1 too (natNeg:1); unanswered / marked for review without an answer 0; Section B answer is an integer (rounded to the nearest integer). */
- jeemain:{name:'JEE (Main)',natNeg:1,neg:q=>1,note:{MCQ:'Section A: four options, only one is correct. Correct answer +4; incorrect answer −1; unanswered or marked for review without an answer 0.',NAT:'Section B: type the answer as an <i>integer</i> using the on-screen keypad (round off to the nearest integer). Correct answer +4; incorrect answer −1 (negative marking applies in Section B too); unanswered 0.'}}
+ jeemain:{name:'JEE (Main)',natNeg:1,neg:q=>1,note:{MCQ:'Section A: four options, only one is correct. Correct answer +4; incorrect answer −1; unanswered or marked for review without an answer 0.',NAT:'Section B: type the answer as an <i>integer</i> using the on-screen keypad (round off to the nearest integer). Correct answer +4; incorrect answer −1 (negative marking applies in Section B too); unanswered 0.'}},
+ /* ---- Entrance Portal exams. neg(q) = marks taken off for a wrong answer. If an exam changes its rule, a single mock can override it with cfg.negAbs / cfg.negFrac (see the comment above). ---- */
+ jeeadv:{name:'JEE (Advanced)',neg:q=>0,note:{MCQ:'The marks and the negative marking of every section are printed in the section heading of the real paper — here they are shown in the table above.',MSQ:'Real JEE Advanced can give partial marks. In this mock full marks are given only if <i>all</i> correct options (and no wrong option) are selected.',NAT:NOTE_NAT}},
+ neet:{name:'NEET (UG)',neg:q=>1,note:{MCQ:'Four options, only one is correct. Correct answer +4; incorrect answer −1; unanswered 0.'}},
+ cuetug:{name:'CUET (UG)',neg:q=>1,note:{MCQ:'Correct answer +5; incorrect answer −1; unanswered 0. All 50 questions of a subject paper are compulsory.'}},
+ bitsat:{name:'BITSAT',neg:q=>1,note:{MCQ:'Correct answer +3; incorrect answer −1; unanswered 0.'}},
+ iiser:{name:'IISER Aptitude Test',neg:q=>1,note:{MCQ:'Four options, only one is correct. Correct answer +4; incorrect answer −1; unanswered 0.'}},
+ nest:{name:'NEST',neg:q=>0,note:{MCQ:'Negative marking applies in NEST; the deduction used in this mock is shown in the table above.',MSQ:'Some NEST questions have more than one correct answer. Full marks only if <i>all</i> correct options (and no wrong option) are selected.',NAT:NOTE_NAT}},
+ nda:{name:'NDA & NA',neg:q=>q.m/3,note:{MCQ:'Four alternatives, only one is correct. A wrong answer costs one-third of the marks of that question (Mathematics 2.5 → −0.83; General Ability Test 4 → −1.33). Unanswered 0.'}},
+ iafxy:{name:'Air Force Agniveervayu',neg:q=>q.m*0.25,note:{MCQ:'Correct answer +1; incorrect answer −0.25; unanswered 0.'}},
+ navy:{name:'Navy Agniveer',neg:q=>q.m*0.25,note:{MCQ:'The negative marking used in this mock is shown in the table above (confirm the rule in the notification of your batch on joinindiannavy.gov.in).'}},
+ cgl:{name:'SSC CGL (Tier-I)',neg:q=>q.m*0.25,note:{MCQ:'Correct answer +2; incorrect answer −0.50; unanswered 0.'}},
+ chsl:{name:'SSC CHSL (Tier-I)',neg:q=>q.m*0.25,note:{MCQ:'Correct answer +2; incorrect answer −0.50; unanswered 0.'}},
+ /* MTS: name the sections of Session I NM / RE and of Session II GA / EN in cfg.secs, so that only Session II (GA, EN) carries −1 */
+ mts:{name:'SSC MTS & Havaldar',neg:q=>/^(GA|EN)/.test(q.s)?1:0,note:{MCQ:'Session I (Numerical Ability, Reasoning): +3, no negative marking. Session II (General Awareness, English): +3, −1 for every wrong answer.'}},
+ gd:{name:'SSC GD Constable',neg:q=>q.m*0.25,note:{MCQ:'Correct answer +2; incorrect answer −0.50; unanswered 0.'}},
+ cpo:{name:'SSC CPO (SI)',neg:q=>q.m*0.25,note:{MCQ:'Correct answer +1; incorrect answer −0.25; unanswered 0.'}},
+ ntpc:{name:'RRB NTPC',neg:q=>q.m/3,note:{MCQ:'Correct answer +1; incorrect answer −1/3; unanswered 0.'}},
+ groupd:{name:'RRB Group D',neg:q=>q.m/3,note:{MCQ:'Correct answer +1; incorrect answer −1/3; unanswered 0.'}},
+ alp:{name:'RRB ALP',neg:q=>q.m/3,note:{MCQ:'Correct answer +1; incorrect answer −1/3; unanswered 0.'}},
+ rrbje:{name:'RRB JE',neg:q=>q.m/3,note:{MCQ:'Correct answer +1; incorrect answer −1/3; unanswered 0.'}}
 };
-const EXID=String(CFG.exam||new URLSearchParams(location.search).get('t')||'').split('-')[0].toLowerCase(),RULE=RULES[EXID]||RULES._;
+const EXID=String(CFG.exam||new URLSearchParams(location.search).get('t')||'').split('-')[0].toLowerCase(),RULE=RULES[EXID]||RULES._,EXI=(window.ES_EXAMINFO||{})[EXID];
 const neg=q=>{if(q.t=='MSQ'||(q.t=='NAT'&&!RULE.natNeg))return 0;const a=CFG.negAbs,fq=CFG.negFrac;
  if(q.n!==undefined)return q.n;if(a&&a[q.s]!==undefined)return a[q.s];if(fq&&fq[q.s]!==undefined)return fq[q.s]*q.m;return RULE.neg(q)};
 const fr=x=>{if(Math.abs(x-Math.round(x))<1e-4)return String(Math.round(x));for(const d of [2,3,4,8]){const n=x*d;if(Math.abs(n-Math.round(n))<1e-4)return Math.round(n)+'/'+d}return String(+x.toFixed(3))};
@@ -108,7 +129,9 @@ function intro(){
  const TN={MCQ:'MCQ (one correct option)',MSQ:'MSQ (one or more correct options)',NAT:'NAT (numerical answer)'};
  const ins=[...new Set(Q.map(x=>x.t))].map(t=>'<li><b>'+(TN[t]||t)+':</b> '+(RULE.note[t]||RULES._.note[t])+'</li>').join('');
  app.innerHTML=`<div class=card><h2>${CFG.title}</h2><p>Total Questions: <b>${qTxt}</b> &nbsp;·&nbsp; Maximum Marks: <b>${tot}</b> &nbsp;·&nbsp; Duration: <b>${CFG.minutes} minutes</b></p>
- <h3>Marking Scheme${RULE.name?' — '+RULE.name+' pattern':''}</h3><table><tr><th>Section</th><th>Questions</th><th>Marks</th><th>Negative marking</th></tr>${pat}<tr><th>Total</th><th>${qTxt}</th><th>${tot}</th><th>${nsTxt}</th></tr></table><h3>Instructions</h3><ul>
+ <h3>Marking Scheme${RULE.name?' — '+RULE.name+' pattern':''}</h3><table><tr><th>Section</th><th>Questions</th><th>Marks</th><th>Negative marking</th></tr>${pat}<tr><th>Total</th><th>${qTxt}</th><th>${tot}</th><th>${nsTxt}</th></tr></table>${EXI?`<h3>Official ${EXI.short} instructions</h3><p style="margin:0 0 6px;font-size:13px;color:#556">${EXI.org} · ${EXI.mode}<br>Follows: ${EXI.asof}</p><ul>${EXI.lines.map(x=>'<li>'+x+'</li>').join('')}</ul><p style="font-size:12.5px;color:#556">Always confirm the latest rules on the official site: ${EXI.src.map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener noreferrer">'+s[0]+' ↗</a>').join(' · ')}</p>`:''}
+ ${CFG.instr&&CFG.instr.length?`<h3>Instructions for this mock</h3><ul>${CFG.instr.map(x=>'<li>'+x+'</li>').join('')}</ul>`:''}
+ <h3>Test window instructions</h3><ul>
  ${ins}
  ${Object.keys(PICK).length?'<li><b>Attempt any N:</b> in sections marked "Attempt any N", answer only N questions. If you answer more than N, only the <i>first N questions you answered</i> (in the order you answered them) are evaluated; the extra answers are ignored. Use "Clear Response" if you change your mind.</li>':''}
  <li>Unattempted questions carry zero marks. The test auto-submits when the timer ends.</li>

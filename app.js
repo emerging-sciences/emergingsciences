@@ -46,6 +46,7 @@ function makeCtx(D,warn){
   exAlias.iitjam=exAlias.iitjam||exAlias.jam;exAlias.cuet=exAlias.cuet||exAlias.cuetpg;exAlias.csirnet=exAlias.csirnet||exAlias.csir;exAlias.tifrgs=exAlias.tifrgs||exAlias.tifr;
   (D.papers||[]).forEach(function(p){papAlias[norm(p.id)]=p.id;papAlias[norm(p.name)]=p.id});
   function eligible(e,p){var has=e.papers&&e.papers.length;return has?e.papers.indexOf(p||'ma')>-1:(!p||p==='ma')}
+  function eligibleAny(e,p){return p?eligible(e,p):true}   /* no subject given = the row is for the whole exam */
   function paper(v,where){v=String(v==null?'':v).trim();if(!v)return '';var id=papAlias[norm(v)];if(!id){warn(where+': unknown subject "'+v+'"');return ''}return id}
   /* returns 'all' or an array of exam ids */
   function exams(v,where){
@@ -58,7 +59,7 @@ function makeCtx(D,warn){
       parts.forEach(function(w){var k=exAlias[norm(w)];if(k){if(out.indexOf(k)<0)out.push(k)}else bad.push(w)});
       if(bad.length)warn(where+': unknown exam "'+bad.join(' ')+'"')});
     return out}
-  return {eligible:eligible,paper:paper,exams:exams}}
+  return {eligible:eligible,eligibleAny:eligibleAny,paper:paper,exams:exams}}
 
 /* ---------- merge: sheet tabs -> ES_DATA ---------- */
 function merge(D,T,warn){
@@ -116,8 +117,8 @@ function merge(D,T,warn){
     T.pyqs.forEach(function(r){var w='PYQs row '+r._row,y=parseInt(r.year,10),qp=httpUrl(r.qp),key=httpUrl(r.key),t=txt(r.title),p=C.paper(r.subject,w);
       if(!y||!t||(!qp&&!key)){warn(w+': needs year, title and a link — skipped');return}
       var ex=C.exams(r.exams,w);if(ex!=='all'&&!ex.length){warn(w+': no valid exam in "'+r.exams+'" — row skipped');return}
-      D.exams.forEach(function(e){if(ex==='all'?C.eligible(e,p):ex.indexOf(e.id)>-1){
-        var o={e:e.id};if(p&&p!=='ma')o.p=p;o.y=y;o.t=t;if(qp)o.qp=qp;if(txt(r.note))o.n=txt(r.note);if(key)o.key=key;if(txt(r.group))o.g=txt(r.group);Q.push(o)}})});
+      D.exams.forEach(function(e){if(ex==='all'?C.eligibleAny(e,p):ex.indexOf(e.id)>-1){
+        var o={e:e.id};if(p)o.p=p;o.y=y;o.t=t;if(qp)o.qp=qp;if(txt(r.note))o.n=txt(r.note);if(key)o.key=key;if(txt(r.group))o.g=txt(r.group);Q.push(o)}})});
     D.pyqs=Q;used.push('pyqs')}
 
   /* Syllabus (one row per exam) */
@@ -126,8 +127,8 @@ function merge(D,T,warn){
     T.syllabus.forEach(function(r){var w='Syllabus row '+r._row,u=httpUrl(r.link),t=txt(r.title),p=C.paper(r.subject,w);
       if(!t||!u){warn(w+': needs a title and a link — skipped');return}
       var ex=C.exams(r.exams,w);if(ex!=='all'&&!ex.length){warn(w+': no valid exam in "'+r.exams+'" — row skipped');return}
-      D.exams.forEach(function(e){if(ex==='all'?C.eligible(e,p):ex.indexOf(e.id)>-1){
-        var o={e:e.id};if(p&&p!=='ma')o.p=p;o.t=t;o.url=u;if(txt(r.src))o.src=txt(r.src);if(txt(r.note))o.n=txt(r.note);Y.push(o)}})});
+      D.exams.forEach(function(e){if(ex==='all'?C.eligibleAny(e,p):ex.indexOf(e.id)>-1){
+        var o={e:e.id};if(p)o.p=p;o.t=t;o.url=u;if(txt(r.src))o.src=txt(r.src);if(txt(r.note))o.n=txt(r.note);Y.push(o)}})});
     D.syllabus=Y;used.push('syllabus')}
   return used}
 

@@ -1,4 +1,4 @@
-const CACHE = "es-entrance-v1";
+const CACHE = "es-entrance-v2";
 
 // Core pages and assets to keep available offline
 const CORE = [
@@ -13,6 +13,7 @@ const CORE = [
   "./mock.html",
   "./test.html",
   "./mocks.js",
+  "./exam-info.js",
   "./support.html",
   "./support-data.js",
   "./nav.js",
