@@ -1759,7 +1759,16 @@ window.ES_DATA = {
    "drive": "1lbbw4SsGr1Qw-hGDbmgbTunKsVVTwEqu"
   }
  ],
- "mocks": [],
+ "mocks": [
+  {
+   "id": "jeemain-full-1",
+   "e": "jeemain",
+   "s": "all",
+   "t": "JEE Main Full Mock 1 (Sample)",
+   "q": 6,
+   "min": 10
+  }
+ ],
  "syllabus": [],
  "pyqs": [],
  "pyqPortals": {},

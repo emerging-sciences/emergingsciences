@@ -21,6 +21,7 @@ input[type=text]{padding:8px;font-size:15px;border:1px solid #99a;border-radius:
 .side{width:290px;background:#fff;border:1px solid #ccd;display:flex;flex-direction:column}
 .tabs{display:flex;gap:4px;padding:6px;border-bottom:1px solid #ccd;flex-wrap:wrap}.tabs button{border:1px solid #99a;background:#f4f6fa;padding:7px 12px;cursor:pointer;border-radius:3px}.tabs .on{background:#1f6fd1;color:#fff}
 .qh{padding:8px 14px;background:#f4f6fa;border-bottom:1px solid #ccd;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.pk{padding:7px 14px;background:#eef6ff;border-bottom:1px solid #ccd;font-size:14px}.pk.bad{background:#fff1ee;color:#a32a12;border-bottom-color:var(--r)}
 .qb{flex:1;overflow:auto;padding:16px 18px;font-size:17px}
 .opt{display:flex;gap:10px;align-items:center;border:1px solid #ccd;border-radius:4px;padding:9px 12px;margin:8px 0;cursor:pointer}.opt:hover{background:#f4f8ff}
 .nat{font-size:20px;padding:8px;width:220px;border:1px solid #666;border-radius:3px}
@@ -51,10 +52,12 @@ const CFG=T.cfg,Q=T.q;
 /* ===== Exam rules: every exam gets its OWN marking scheme + instructions =====
    The exam is read from cfg.exam, or else from the start of the test id in mocks.js / data.js
    (jam-full-1 -> jam, gate-ma-1 -> gate, cuetpg-ma-1, csir-ma-1, tifr-ma-1, nbhm-1, isi-1, cmi-1).
-   neg(q) = marks taken off for a WRONG answer (only MCQ questions are ever penalised; MSQ / NAT never are).
+   neg(q) = marks taken off for a WRONG answer (MCQ questions are penalised; MSQ never is; NAT only when the exam's rule has  natNeg:1, e.g. jeemain).
    A single test can override it in its cfg, per section key:  negAbs:{B:2}  (marks)   or   negFrac:{A:.25,C:0}  (fraction of the question's marks);
    a single question can carry  n:2.   (TIFR True/False part: make it an MCQ with two options "True","False" and set negAbs:{B:2}.)
-   Not supported yet (needs an engine change when such a mock is made): "attempt any N of M" sections (CSIR NET, CMI Part B) and written / proof answers (ISI PMB, CMI Part B, TIFR Stage II). */
+   "Attempt any N of M" sections (old NEET / JEE Main Section B, CUET UG 40-of-50, CSIR NET, CMI Part B): in the test's cfg write  pick:{B:10}  (section key : N).
+   Rule used = NTA's: if more than N questions of that section are answered, only the FIRST N answered (in the order the candidate answered them) are evaluated; extra answers are ignored.
+   Max marks count only N questions of such a section. Not supported yet (needs an engine change when such a mock is made): written / proof answers (ISI PMB, CMI Part B, TIFR Stage II). */
 const NOTE_NAT='Type the numerical answer using the on-screen keypad. No negative marking.';
 const NOTE_MSQ='Full marks only if <i>all</i> correct options (and no wrong option) are selected. No negative marking and no partial marking.';
 const RULES={
@@ -66,10 +69,13 @@ const RULES={
  tifr:{name:'TIFR GS Mathematics (Stage I)',neg:q=>q.m/2,note:{MCQ:'Part A has four options with exactly one correct; Part B is True / False. Correct answer +2, unanswered 0; a wrong answer costs 1 mark in Part A and 2 marks in Part B.'}},
  nbhm:{name:'NBHM',neg:q=>0,note:{MCQ:'True / False problems carry negative marking in the real NBHM test — the deduction for this mock is shown in the table above.',NAT:'Type only the final answer. No negative marking for short-answer problems.'}},
  isi:{name:'ISI M.Math (PMA)',neg:q=>0,note:{MCQ:'ISI has not published a negative-marking rule, so this mock has none unless the table above says otherwise.'}},
- cmi:{name:'CMI M.Sc. Mathematics',neg:q=>0,note:{MSQ:'Credit only if <i>all</i> correct options are chosen and no incorrect option is chosen. Negative marking is not mentioned on the official paper.'}}
+ cmi:{name:'CMI M.Sc. Mathematics',neg:q=>0,note:{MSQ:'Credit only if <i>all</i> correct options are chosen and no incorrect option is chosen. Negative marking is not mentioned on the official paper.'}},
+ /* JEE (Main) — source: NTA JEE (Main) 2026 Information Bulletin, sec. 2.4 (Paper 1: 3 subjects × [Section A 20 MCQ + Section B 5 numerical], 75 Qs, 300 marks, 3 hours).
+    +4 correct; MCQ wrong −1; Section B wrong −1 too (natNeg:1); unanswered / marked for review without an answer 0; Section B answer is an integer (rounded to the nearest integer). */
+ jeemain:{name:'JEE (Main)',natNeg:1,neg:q=>1,note:{MCQ:'Section A: four options, only one is correct. Correct answer +4; incorrect answer −1; unanswered or marked for review without an answer 0.',NAT:'Section B: type the answer as an <i>integer</i> using the on-screen keypad (round off to the nearest integer). Correct answer +4; incorrect answer −1 (negative marking applies in Section B too); unanswered 0.'}}
 };
 const EXID=String(CFG.exam||new URLSearchParams(location.search).get('t')||'').split('-')[0].toLowerCase(),RULE=RULES[EXID]||RULES._;
-const neg=q=>{if(q.t!='MCQ')return 0;const a=CFG.negAbs,fq=CFG.negFrac;
+const neg=q=>{if(q.t=='MSQ'||(q.t=='NAT'&&!RULE.natNeg))return 0;const a=CFG.negAbs,fq=CFG.negFrac;
  if(q.n!==undefined)return q.n;if(a&&a[q.s]!==undefined)return a[q.s];if(fq&&fq[q.s]!==undefined)return fq[q.s]*q.m;return RULE.neg(q)};
 const fr=x=>{if(Math.abs(x-Math.round(x))<1e-4)return String(Math.round(x));for(const d of [2,3,4,8]){const n=x*d;if(Math.abs(n-Math.round(n))<1e-4)return Math.round(n)+'/'+d}return String(+x.toFixed(3))};
 /* ===== Engine ===== */
@@ -78,23 +84,33 @@ let S,endT,tm,nm='';
 const has=i=>Q[i].t=='NAT'?S.ans[i]!=='':S.ans[i].length>0;
 const mk=i=>S.st[i]==3||S.st[i]==4;
 const pen=q=>{const n=neg(q);return n>0?'Negative −'+fr(n):'No negative'};
+/* ---- "Attempt any N of M" sections: cfg.pick={SECTION_KEY:N} (see the rules comment above) ---- */
+const PICK=CFG.pick||{},secIx=s=>Q.map((_,i)=>i).filter(i=>Q[i].s==s);
+const needOf=s=>PICK[s]?Math.min(PICK[s],secIx(s).length):secIx(s).length;
+const maxOf=s=>{const ms=secIx(s).map(i=>Q[i].m).sort((a,b)=>b-a);return (PICK[s]?ms.slice(0,PICK[s]):ms).reduce((a,b)=>a+b,0)};
+const counted=i=>{const n=PICK[Q[i].s];if(!n||!has(i))return true;return secIx(Q[i].s).filter(has).sort((a,b)=>S.sq[a]-S.sq[b]).indexOf(i)<n};
+const touch=i=>{if(has(i)){if(!S.sq[i])S.sq[i]=++S.n}else S.sq[i]=0};
+const pkHtml=()=>{const q=Q[S.i],n=PICK[q.s];if(!n)return '';const k=secIx(q.s).filter(has).length,over=has(S.i)&&!counted(S.i);
+ return `<div class="pk${over?' bad':''}">Attempt any <b>${needOf(q.s)}</b> of ${secIx(q.s).length} questions in this section · answered: <b>${k}</b>${over?' — <b>this answer will NOT be evaluated</b>: you have already answered '+n+' questions here and only the first '+n+' you answered count. Clear another answer to count this one.':''}</div>`};
+const upd=()=>{const e=$('#pk');if(e)e.innerHTML=pkHtml()};
 const mth=()=>window.renderMathInElement&&renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});
 const CL=['nv','n','a','m','am'];
 const leg=`<div class=leg><span><i>1</i>Not Visited</span><span><i class=n>2</i>Not Answered</span><span><i class=a>3</i>Answered</span><span><i class=m>4</i>Marked for Review</span><span style="grid-column:span 2"><i class=am>5</i>Answered &amp; Marked for Review (will be evaluated)</span></div>`;
 function intro(){
- const tot=Q.reduce((a,q)=>a+q.m,0),secs=[...new Set(Q.map(x=>x.s))];
+ const secs=[...new Set(Q.map(x=>x.s))],tot=secs.reduce((a,s)=>a+maxOf(s),0),req=secs.reduce((a,s)=>a+needOf(s),0),qTxt=Q.length+(req!=Q.length?' <small>(attempt '+req+')</small>':'');
  const mixTxt=z=>{const c={};z.forEach(q=>c[q.m]=(c[q.m]||0)+1);return Object.keys(c).map(Number).sort((a,b)=>a-b).map(m=>c[m]+' × '+m+' mark'+(m==1?'':'s')).join(', ')};
  const negTxt=z=>{const parts=[...new Set(z.map(q=>q.t))].map(t=>{const g={};z.filter(q=>q.t==t).forEach(q=>{g[q.m+'|'+neg(q)]=[q.m,neg(q)]});const a=Object.values(g).sort((x,y)=>x[0]-y[0]);
    return {t:t,txt:a.every(x=>!x[1])?'None':a.map(x=>(x[1]?'−'+fr(x[1]):'None')+(a.length>1?' ('+x[0]+'-mark)':'')).join(', ')}});
   if(parts.length==1)return parts[0].txt+(parts[0].t=='MSQ'&&parts[0].txt=='None'?' (no partial marking)':'');
   return parts.map(x=>x.t+': '+x.txt).join('; ')};
- const pat=secs.map(s=>{const z=Q.filter(x=>x.s==s);return '<tr><td>'+CFG.secs[s]+'</td><td>'+z.length+' ('+mixTxt(z)+')</td><td>'+z.reduce((a,x)=>a+x.m,0)+'</td><td>'+negTxt(z)+'</td></tr>'}).join('');
+ const pat=secs.map(s=>{const z=Q.filter(x=>x.s==s);return '<tr><td>'+CFG.secs[s]+'</td><td>'+z.length+' ('+mixTxt(z)+')'+(PICK[s]?'<br><b>Attempt any '+needOf(s)+'</b>':'')+'</td><td>'+maxOf(s)+'</td><td>'+negTxt(z)+'</td></tr>'}).join('');
  const ns=secs.filter(s=>Q.some(q=>q.s==s&&neg(q)>0)),nsTxt=!ns.length?'None':ns.length==secs.length?'All sections':'Section '+ns.join(' &amp; ')+' only';
  const TN={MCQ:'MCQ (one correct option)',MSQ:'MSQ (one or more correct options)',NAT:'NAT (numerical answer)'};
  const ins=[...new Set(Q.map(x=>x.t))].map(t=>'<li><b>'+(TN[t]||t)+':</b> '+(RULE.note[t]||RULES._.note[t])+'</li>').join('');
- app.innerHTML=`<div class=card><h2>${CFG.title}</h2><p>Total Questions: <b>${Q.length}</b> &nbsp;·&nbsp; Maximum Marks: <b>${tot}</b> &nbsp;·&nbsp; Duration: <b>${CFG.minutes} minutes</b></p>
- <h3>Marking Scheme${RULE.name?' — '+RULE.name+' pattern':''}</h3><table><tr><th>Section</th><th>Questions</th><th>Marks</th><th>Negative marking</th></tr>${pat}<tr><th>Total</th><th>${Q.length}</th><th>${tot}</th><th>${nsTxt}</th></tr></table><h3>Instructions</h3><ul>
+ app.innerHTML=`<div class=card><h2>${CFG.title}</h2><p>Total Questions: <b>${qTxt}</b> &nbsp;·&nbsp; Maximum Marks: <b>${tot}</b> &nbsp;·&nbsp; Duration: <b>${CFG.minutes} minutes</b></p>
+ <h3>Marking Scheme${RULE.name?' — '+RULE.name+' pattern':''}</h3><table><tr><th>Section</th><th>Questions</th><th>Marks</th><th>Negative marking</th></tr>${pat}<tr><th>Total</th><th>${qTxt}</th><th>${tot}</th><th>${nsTxt}</th></tr></table><h3>Instructions</h3><ul>
  ${ins}
+ ${Object.keys(PICK).length?'<li><b>Attempt any N:</b> in sections marked "Attempt any N", answer only N questions. If you answer more than N, only the <i>first N questions you answered</i> (in the order you answered them) are evaluated; the extra answers are ignored. Use "Clear Response" if you change your mind.</li>':''}
  <li>Unattempted questions carry zero marks. The test auto-submits when the timer ends.</li>
  <li>Questions "Marked for Review" with an answer are evaluated; without an answer they are treated as unattempted.</li></ul>${leg}
  <p>Candidate name: <input type=text id=nm placeholder="Your name"></p>
@@ -103,7 +119,7 @@ function intro(){
  $('#gb').onclick=()=>{nm=$('#nm').value.trim()||'Candidate';start()};
 }
 function start(){
- S={i:0,ans:Q.map(q=>q.t=='NAT'?'':[]),st:Q.map(()=>0)};S.st[0]=1;
+ S={i:0,ans:Q.map(q=>q.t=='NAT'?'':[]),st:Q.map(()=>0),sq:Q.map(()=>0),n:0};S.st[0]=1;
  endT=Date.now()+CFG.minutes*60000;tm=setInterval(tick,500);tick();
  onbeforeunload=e=>{e.preventDefault();e.returnValue=''};$('#timer').style.display='block';document.body.classList.add('testing');draw();
 }
@@ -114,9 +130,9 @@ function tick(){
 }
 function commit(i,m){S.st[i]=has(i)?(m?4:2):(m?3:1)}
 function nav(n,m){commit(S.i,m);S.i=n;if(!S.st[n])S.st[n]=1;draw()}
-function pick(j,c){const q=Q[S.i];if(q.t=='MCQ')S.ans[S.i]=[j];else{const a=S.ans[S.i];S.ans[S.i]=c?[...a,j]:a.filter(x=>x!=j)}}
-function nat(v,inp){v=v.replace(/[^0-9.\-]/g,'');S.ans[S.i]=v;if(!inp)$('#nat').value=v}
-function clr(){S.ans[S.i]=Q[S.i].t=='NAT'?'':[];S.st[S.i]=1;draw()}
+function pick(j,c){const q=Q[S.i];if(q.t=='MCQ')S.ans[S.i]=[j];else{const a=S.ans[S.i];S.ans[S.i]=c?[...a,j]:a.filter(x=>x!=j)}touch(S.i);upd()}
+function nat(v,inp){v=v.replace(/[^0-9.\-]/g,'');S.ans[S.i]=v;if(!inp)$('#nat').value=v;touch(S.i);upd()}
+function clr(){S.ans[S.i]=Q[S.i].t=='NAT'?'':[];touch(S.i);S.st[S.i]=1;draw()}
 function draw(){
  const q=Q[S.i],secs=[...new Set(Q.map(x=>x.s))];
  let body;
@@ -126,11 +142,12 @@ function draw(){
  app.innerHTML=`<div class=wrap><div class=main>
  <div class=tabs>${secs.map(s=>`<button class="${s==cs?'on':''}" onclick="nav(${Q.findIndex(x=>x.s==s)},mk(S.i))">${CFG.secs[s]}</button>`).join('')}</div>
  <div class=qh><b>Question ${S.i+1} of ${Q.length}</b><span>${q.t} &nbsp;|&nbsp; Marks: +${q.m} &nbsp;|&nbsp; ${pen(q)}</span></div>
+ <div id=pk>${pkHtml()}</div>
  <div class=qb><p>${q.q}</p>${q.t=='MSQ'?'<small><i>One or more options may be correct.</i></small>':''}${body}</div>
  <div class=btns><button class="btn war" onclick="nav((S.i+1)%Q.length,1)">Mark for Review &amp; Next</button><button class=btn onclick="clr()">Clear Response</button><span class=sp style="flex:1"></span><button class=btn onclick="nav(Math.max(0,S.i-1),mk(S.i))">&lt; Previous</button><button class="btn pri" onclick="nav((S.i+1)%Q.length,0)">Save &amp; Next</button></div></div>
  <div class=side><div class=who><img src="logo-icon.png" alt=""><div><b>${nm}</b><br><small>Emerging Sciences</small></div></div>
  <div class=leg style="grid-template-columns:1fr 1fr 1fr;padding:6px 8px"><span><i>${cnt[0]}</i>Not Visited</span><span><i class=n>${cnt[1]}</i>Not Ans.</span><span><i class=a>${cnt[2]}</i>Answered</span><span><i class=m>${cnt[3]}</i>Marked</span><span style="grid-column:span 2"><i class=am>${cnt[4]}</i>Ans. &amp; Marked</span></div>
- <div class=sh>${CFG.secs[cs]}</div><div class=pal>${Q.map((x,i)=>x.s==cs?`<button class="pb ${CL[S.st[i]]} ${i==S.i?'cur':''}" onclick="nav(${i},mk(S.i))">${i+1}</button>`:'').join('')}</div>
+ <div class=sh>${CFG.secs[cs]}${PICK[cs]?' — attempt any '+needOf(cs):''}</div><div class=pal>${Q.map((x,i)=>x.s==cs?`<button class="pb ${CL[S.st[i]]} ${i==S.i?'cur':''}" onclick="nav(${i},mk(S.i))">${i+1}</button>`:'').join('')}</div>
  <div style="padding:8px"><button class="go" style="width:100%" onclick="summary()">Submit Test</button></div></div></div>`;
  mth();
 }
@@ -138,27 +155,29 @@ function summary(){
  const secs=[...new Set(Q.map(x=>x.s))];commit(S.i,mk(S.i));
  const rows=secs.map(s=>{const ix=Q.map((_,i)=>i).filter(i=>Q[i].s==s),c=k=>ix.filter(i=>S.st[i]==k).length;
  return `<tr><td>${CFG.secs[s]}</td><td>${ix.length}</td><td>${c(2)+c(4)}</td><td>${c(1)+c(3)}</td><td>${c(3)+c(4)}</td><td>${c(0)}</td></tr>`}).join('');
+ const warn=secs.filter(s=>PICK[s]&&secIx(s).filter(has).length>PICK[s]).map(s=>`<p style="color:#a32a12">⚠ ${CFG.secs[s]}: you answered ${secIx(s).filter(has).length} questions but only the first ${PICK[s]} you answered will be evaluated.</p>`).join('');
  const o=document.createElement('div');o.className='ov';
- o.innerHTML=`<div class=card><h3>Exam Summary</h3><table><tr><th>Section</th><th>Questions</th><th>Answered</th><th>Not Answered</th><th>Marked for Review</th><th>Not Visited</th></tr>${rows}</table><p>Are you sure you want to submit? You cannot change answers after submitting.</p><button class=btn onclick="this.closest('.ov').remove()">No, go back</button> <button class=go onclick="finish()">Yes, Submit</button></div>`;
+ o.innerHTML=`<div class=card><h3>Exam Summary</h3><table><tr><th>Section</th><th>Questions</th><th>Answered</th><th>Not Answered</th><th>Marked for Review</th><th>Not Visited</th></tr>${rows}</table>${warn}<p>Are you sure you want to submit? You cannot change answers after submitting.</p><button class=btn onclick="this.closest('.ov').remove()">No, go back</button> <button class=go onclick="finish()">Yes, Submit</button></div>`;
  document.body.appendChild(o);
 }
 function score(i){
- const q=Q[i],a=S.ans[i];if(!has(i))return 0;
+ const q=Q[i],a=S.ans[i];if(!has(i)||!counted(i))return 0;
  if(q.t=='MCQ')return a[0]==q.a[0]?q.m:-neg(q);
  if(q.t=='MSQ')return a.length==q.a.length&&a.every(x=>q.a.includes(x))?q.m:0;
- const v=parseFloat(a);return !isNaN(v)&&v>=q.a[0]-1e-6&&v<=q.a[1]+1e-6?q.m:0;
+ const v=parseFloat(a);return !isNaN(v)&&v>=q.a[0]-1e-6&&v<=q.a[1]+1e-6?q.m:(neg(q)?-neg(q):0);
 }
 function finish(){
  clearInterval(tm);onbeforeunload=null;document.body.classList.remove('testing');$('#timer').style.display='none';document.querySelectorAll('.ov').forEach(e=>e.remove());
- const sc=Q.map((_,i)=>score(i)),tot=Q.reduce((a,q)=>a+q.m,0),sum=sc.reduce((a,b)=>a+b,0);
- const att=Q.filter((_,i)=>has(i)).length,ok=sc.filter(x=>x>0).length,bad=sc.filter(x=>x<0).length;
  const secs=[...new Set(Q.map(x=>x.s))];
- const srows=secs.map(s=>{const ix=Q.map((_,i)=>i).filter(i=>Q[i].s==s);return `<tr><td>${CFG.secs[s]}</td><td>${(ix.reduce((a,i)=>a+sc[i],0)).toFixed(2)}</td><td>${ix.reduce((a,i)=>a+Q[i].m,0)}</td></tr>`}).join('');
+ const sc=Q.map((_,i)=>score(i)),tot=secs.reduce((a,s)=>a+maxOf(s),0),req=secs.reduce((a,s)=>a+needOf(s),0),sum=sc.reduce((a,b)=>a+b,0);
+ const att=Q.filter((_,i)=>has(i)&&counted(i)).length,ok=sc.filter(x=>x>0).length,bad=sc.filter(x=>x<0).length;
+ const srows=secs.map(s=>{const ix=secIx(s);return `<tr><td>${CFG.secs[s]}</td><td>${(ix.reduce((a,i)=>a+sc[i],0)).toFixed(2)}</td><td>${maxOf(s)}</td></tr>`}).join('');
  const ans=(q,a)=>q.t=='NAT'?(a===''?'—':a):(a.length?[...a].sort().map(j=>LET[j]).join(', '):'—');
  const rev=Q.map((q,i)=>{const correct=q.t=='NAT'?(q.a[0]==q.a[1]?q.a[0]:q.a[0]+' to '+q.a[1]):q.a.map(j=>LET[j]).join(', ');
- return `<div class="rv ${sc[i]>0?'ok':sc[i]<0||has(i)?'bad':''}"><b>Q${i+1}</b> · ${q.t} · <b>${sc[i]>0?'+':''}${+sc[i].toFixed(2)}</b> / ${q.m}<p>${q.q}</p>${q.o?'<ol type=A>'+q.o.map(o=>`<li>${o}</li>`).join('')+'</ol>':''}<p>Your answer: <b>${ans(q,S.ans[i])}</b> &nbsp;|&nbsp; Correct answer: <b>${correct}</b></p><p><i>Solution:</i> ${q.e}</p></div>`}).join('');
+ const ign=has(i)&&!counted(i);
+ return `<div class="rv ${sc[i]>0?'ok':sc[i]<0||(has(i)&&!ign)?'bad':''}"><b>Q${i+1}</b> · ${q.t} · <b>${sc[i]>0?'+':''}${+sc[i].toFixed(2)}</b> / ${q.m}${ign?'<p><i>⚠ Not evaluated: you answered more than '+PICK[q.s]+' questions in this section and only the first '+PICK[q.s]+' you answered count.</i></p>':''}<p>${q.q}</p>${q.o?'<ol type=A>'+q.o.map(o=>`<li>${o}</li>`).join('')+'</ol>':''}<p>Your answer: <b>${ans(q,S.ans[i])}</b> &nbsp;|&nbsp; Correct answer: <b>${correct}</b></p><p><i>Solution:</i> ${q.e}</p></div>`}).join('');
  app.innerHTML=`<div class=card><h2>Result — ${nm}</h2><div class=big>${sum.toFixed(2)} / ${tot}</div>
- <p>Attempted: <b>${att}</b> · Correct: <b>${ok}</b> · Wrong: <b>${bad}</b> · Not attempted: <b>${Q.length-att}</b> · Accuracy: <b>${att?Math.round(ok/att*100):0}%</b></p>
+ <p>Attempted: <b>${att}</b> · Correct: <b>${ok}</b> · Wrong: <b>${bad}</b> · Not attempted: <b>${Math.max(0,req-att)}</b> · Accuracy: <b>${att?Math.round(ok/att*100):0}%</b></p>
  <table><tr><th>Section</th><th>Score</th><th>Max</th></tr>${srows}</table>
  <button class="btn pri" onclick="location.reload()">Retake Test</button> <a class=btn href="mock.html" style="text-decoration:none;color:#000;display:inline-block">Back to Mock Tests</a>
  <h3>Detailed Solutions</h3>${rev}</div>`;

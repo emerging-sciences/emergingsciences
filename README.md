@@ -20,3 +20,5 @@ Content sirf `data.js` me add hota hai. Pages khud ban jaate hain.
   `{"id":"jeemain-kin-1","e":"jeemain","s":"ph-kin","t":"Kinematics Test 1","q":20,"min":30}`
 
 Jab tak kisi exam ka mock add nahi hota, card "Coming soon" dikhta hai.
+
+**Attempt any N of M** (jaise purana NEET / JEE Main Section B, CUET UG 40 of 50): mock ke `cfg` me `pick:{"B":10}` likho (section key : N). NTA ka rule chalta hai: agar N se zyada answer kiye to jo pehle N answer kiye vahi check hote hain, baaki ignore. Max marks me sirf N questions ginte hain. Test me upar ek line dikhti hai "answered: k" aur zyada answer karne par chetavani.
